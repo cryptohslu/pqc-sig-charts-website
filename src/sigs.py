@@ -9,11 +9,31 @@ from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 _dash_renderer._set_react_version("18.2.0")
+colors = dmc.DEFAULT_THEME["colors"]
+del colors["dark"]
+del colors["gray"]
 
 OQS_VERSION = "0.12.0"
 DATASET = "dataset_v2.zst"
 
 df = pd.read_pickle(Path(__file__).resolve().parent.parent / "data" / DATASET)
+
+data_radar_nist_1_2 = []
+data_radar_nist_3 = []
+data_radar_nist_5 = []
+
+for feature in df.loc[[1, 2]].columns:
+    data_radar_nist_1_2.append(
+        {"feature": feature}
+        | df.loc[1].loc[:, feature].to_dict()
+        | df.loc[2].loc[:, feature].to_dict()
+    )
+
+for feature in df.loc[3].columns:
+    data_radar_nist_3.append({"feature": feature} | df.loc[3].loc[:, feature].to_dict())
+
+for feature in df.loc[5].columns:
+    data_radar_nist_5.append({"feature": feature} | df.loc[5].loc[:, feature].to_dict())
 
 server = Flask(__name__)
 server.wsgi_app = ProxyFix(server.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
@@ -26,8 +46,16 @@ app = Dash(
     url_base_pathname="/sig-charts/",
 )
 
-
 opts = [["Keygen (μs)", "Keygen"], ["Sign (μs)", "Sign"], ["Verify (μs)", "Verify"]]
+
+data = [
+    {"product": "Apples", "sales": 120},
+    {"product": "Oranges", "sales": 98},
+    {"product": "Tomatoes", "sales": 86},
+    {"product": "Grapes", "sales": 99},
+    {"product": "Bananas", "sales": 85},
+    {"product": "Lemons", "sales": 65},
+]
 
 app.layout = dmc.MantineProvider(
     defaultColorScheme="dark",
@@ -59,7 +87,144 @@ app.layout = dmc.MantineProvider(
                 dmc.Space(h=30),
                 dmc.Title("Benchmarking PQC Signature Algorithms", order=1),
                 dmc.Space(h=15),
-                dmc.Space(h=15),
+                dmc.Group(
+                    grow=True,
+                    preventGrowOverflow=False,
+                    wrap="nowrap",
+                    children=[
+                        dmc.Stack(
+                            [
+                                dmc.RadarChart(
+                                    id="radar_nist_1_2",
+                                    h=350,
+                                    data=data_radar_nist_1_2,
+                                    dataKey="feature",
+                                    withPolarGrid=True,
+                                    withPolarAngleAxis=True,
+                                    withPolarRadiusAxis=True,
+                                    polarRadiusAxisProps={
+                                        "angle": 60,
+                                        "scale": "log",
+                                        "domain": [1, 10**6],
+                                    },
+                                    withLegend=True,
+                                    series=[],
+                                ),
+                                dmc.Center(
+                                    [
+                                        dmc.MultiSelect(
+                                            id="multi-select-nist-1-2",
+                                            description="You can select a maximum of 5 algs.",
+                                            value=[
+                                                "ML-DSA-44",
+                                                "Falcon-512",
+                                                "SPHINCS+-SHA2-128s-simple",
+                                            ],
+                                            maxValues=5,
+                                            data=[
+                                                {"value": _, "label": _}
+                                                for _ in df.loc[1].index.tolist()
+                                                + df.loc[2].index.tolist()
+                                            ],
+                                            w=400,
+                                            mb=10,
+                                        ),
+                                    ]
+                                ),
+                            ],
+                            align="stretch",
+                            gap="sm",
+                        ),
+                        dmc.Stack(
+                            [
+                                dmc.RadarChart(
+                                    id="radar_nist_3",
+                                    h=350,
+                                    data=data_radar_nist_3,
+                                    dataKey="feature",
+                                    withPolarGrid=True,
+                                    withPolarAngleAxis=True,
+                                    withPolarRadiusAxis=True,
+                                    polarRadiusAxisProps={
+                                        "angle": 60,
+                                        "scale": "log",
+                                        "domain": [1, 10**6],
+                                    },
+                                    withLegend=True,
+                                    series=[],
+                                ),
+                                dmc.Center(
+                                    [
+                                        dmc.MultiSelect(
+                                            id="multi-select-nist-3",
+                                            description="You can select a maximum of 5 algs.",
+                                            value=[
+                                                "ML-DSA-65",
+                                                "MAYO-3",
+                                                "SPHINCS+-SHA2-192s-simple",
+                                            ],
+                                            maxValues=5,
+                                            data=[
+                                                {"value": _, "label": _}
+                                                for _ in df.loc[3].index.tolist()
+                                            ],
+                                            w=400,
+                                            mb=10,
+                                        ),
+                                    ]
+                                ),
+                            ],
+                            align="stretch",
+                            gap="sm",
+                        ),
+                        dmc.Stack(
+                            [
+                                dmc.RadarChart(
+                                    id="radar_nist_5",
+                                    h=350,
+                                    data=data_radar_nist_5,
+                                    dataKey="feature",
+                                    withPolarGrid=True,
+                                    withPolarAngleAxis=True,
+                                    withPolarRadiusAxis=True,
+                                    polarRadiusAxisProps={
+                                        "angle": 60,
+                                        "scale": "log",
+                                        "domain": [1, 10**6],
+                                    },
+                                    radarProps={
+                                        "isAnimationActive": True,
+                                    },
+                                    withLegend=True,
+                                    series=[],
+                                ),
+                                dmc.Center(
+                                    [
+                                        dmc.MultiSelect(
+                                            id="multi-select-nist-5",
+                                            description="You can select a maximum of 5 algs.",
+                                            value=[
+                                                "ML-DSA-87",
+                                                "FALCON-1024",
+                                                "SPHINCS+-SHA2-256s-simple",
+                                            ],
+                                            maxValues=5,
+                                            data=[
+                                                {"value": _, "label": _}
+                                                for _ in df.loc[5].index.tolist()
+                                            ],
+                                            w=400,
+                                            mb=10,
+                                        ),
+                                    ]
+                                ),
+                            ],
+                            align="stretch",
+                            gap="sm",
+                        ),
+                    ],
+                ),
+                dmc.Space(h=30),
                 dmc.Text("Select the NIST security level"),
                 dmc.Space(h=10),
                 dmc.SegmentedControl(
@@ -169,6 +334,48 @@ def update_visibility_raw_table(n):
     if n % 2 == 0:
         return False
     return True
+
+
+@callback(
+    Output("radar_nist_1_2", "series"),
+    Input("multi-select-nist-1-2", "value"),
+)
+def update_radar_nist_1_2(algs):
+    d = []
+    for i, alg in enumerate(algs):
+        c = colors[list(colors)[2 * i]][5]
+        d.append(
+            {"name": alg, "color": c, "opacity": 0.25},
+        )
+    return d
+
+
+@callback(
+    Output("radar_nist_3", "series"),
+    Input("multi-select-nist-3", "value"),
+)
+def update_radar_nist_3(algs):
+    d = []
+    for i, alg in enumerate(algs):
+        c = colors[list(colors)[2 * i]][5]
+        d.append(
+            {"name": alg, "color": c, "opacity": 0.25},
+        )
+    return d
+
+
+@callback(
+    Output("radar_nist_5", "series"),
+    Input("multi-select-nist-5", "value"),
+)
+def update_radar_nist_5(algs):
+    d = []
+    for i, alg in enumerate(algs):
+        c = colors[list(colors)[2 * i]][5]
+        d.append(
+            {"name": alg, "color": c, "opacity": 0.25},
+        )
+    return d
 
 
 # This is required to update the color mode using the switch button
