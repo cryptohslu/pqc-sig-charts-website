@@ -9,9 +9,7 @@ from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 _dash_renderer._set_react_version("18.2.0")
-colors = dmc.DEFAULT_THEME["colors"]
-del colors["dark"]
-del colors["gray"]
+colors = ["#ff6b6b", "#339af0", "#51cf66", "#fcc419", "#cc5de8"]
 
 OQS_VERSION = "0.12.0"
 DATASET = "dataset_v2.zst"
@@ -349,7 +347,7 @@ def update_visibility_raw_table(n):
 def update_radar_nist_1_2(algs):
     d = []
     for i, alg in enumerate(algs):
-        c = colors[list(colors)[2 * i]][5]
+        c = colors[i]
         d.append(
             {"name": alg, "color": c, "opacity": 0.25},
         )
@@ -363,7 +361,7 @@ def update_radar_nist_1_2(algs):
 def update_radar_nist_3(algs):
     d = []
     for i, alg in enumerate(algs):
-        c = colors[list(colors)[2 * i]][5]
+        c = colors[i]
         d.append(
             {"name": alg, "color": c, "opacity": 0.25},
         )
@@ -377,7 +375,7 @@ def update_radar_nist_3(algs):
 def update_radar_nist_5(algs):
     d = []
     for i, alg in enumerate(algs):
-        c = colors[list(colors)[2 * i]][5]
+        c = colors[i]
         d.append(
             {"name": alg, "color": c, "opacity": 0.25},
         )
