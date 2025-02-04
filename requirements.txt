@@ -1,5 +1,6 @@
 dash
 dash-iconify
 dash-mantine-components
+gunicorn
 pandas
 zstandard
