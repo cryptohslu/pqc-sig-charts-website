@@ -2,3 +2,4 @@ dash
 dash-iconify
 dash-mantine-components
 pandas
+zstandard
