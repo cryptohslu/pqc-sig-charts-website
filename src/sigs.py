@@ -92,6 +92,9 @@ app.layout = dmc.MantineProvider(
                     children=[
                         dmc.Stack(
                             [
+                                dmc.Text(
+                                    "NIST Security Level 1 & 2", size="md", ta="center"
+                                ),
                                 dmc.RadarChart(
                                     id="radar_nist_1_2",
                                     h=350,
@@ -138,6 +141,9 @@ app.layout = dmc.MantineProvider(
                         ),
                         dmc.Stack(
                             [
+                                dmc.Text(
+                                    "NIST Security Level 3", size="md", ta="center"
+                                ),
                                 dmc.RadarChart(
                                     id="radar_nist_3",
                                     h=350,
@@ -183,6 +189,9 @@ app.layout = dmc.MantineProvider(
                         ),
                         dmc.Stack(
                             [
+                                dmc.Text(
+                                    "NIST Security Level 5", size="md", ta="center"
+                                ),
                                 dmc.RadarChart(
                                     id="radar_nist_5",
                                     h=350,
