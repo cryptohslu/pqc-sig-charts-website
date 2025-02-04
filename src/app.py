@@ -1,20 +1,12 @@
 from pathlib import Path
 
-from flask import Flask
-from dash import (
-    Dash,
-    _dash_renderer,
-    callback,
-    dcc,
-    Input,
-    Output,
-    clientside_callback,
-)
 import dash_mantine_components as dmc
-from dash_iconify import DashIconify
-import plotly.express as px
 import pandas as pd
-
+import plotly.express as px
+from dash import Dash, Input, Output, _dash_renderer, callback, clientside_callback, dcc
+from dash_iconify import DashIconify
+from flask import Flask
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 _dash_renderer._set_react_version("18.2.0")
 
@@ -24,7 +16,16 @@ DATASET = "dataset_v2.zst"
 df = pd.read_pickle(Path(__file__).resolve().parent.parent / "data" / DATASET)
 
 server = Flask(__name__)
-app = Dash(__name__, server=server, external_stylesheets=dmc.styles.ALL)
+server.wsgi_app = ProxyFix(server.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
+server.config["APPLICATION_ROOT"] = "/sig-charts"
+
+app = Dash(
+    __name__,
+    server=server,
+    external_stylesheets=dmc.styles.ALL,
+    url_base_pathname="/sig-charts/",
+)
+
 
 opts = [["Keygen (μs)", "Keygen"], ["Sign (μs)", "Sign"], ["Verify (μs)", "Verify"]]
 
