@@ -40,12 +40,6 @@ app.layout = dmc.MantineProvider(
                 "marginBottom": 20,
             },
             children=[
-                dmc.Alert(
-                    "Demo website using Plotly and Dash",
-                    title="Welcome!",
-                    color="violet",
-                    withCloseButton=True,
-                ),
                 dmc.Space(h=15),
                 dmc.Switch(
                     offLabel=DashIconify(
