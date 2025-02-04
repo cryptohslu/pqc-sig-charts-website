@@ -218,7 +218,7 @@ app.layout = dmc.MantineProvider(
                                             description="You can select a maximum of 5 algs.",
                                             value=[
                                                 "ML-DSA-87",
-                                                "FALCON-1024",
+                                                "Falcon-1024",
                                                 "SPHINCS+-SHA2-256s-simple",
                                             ],
                                             maxValues=5,
