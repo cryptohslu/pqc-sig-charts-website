@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from flask import Flask
 from dash import (
     Dash,
     _dash_renderer,
@@ -22,7 +23,9 @@ DATASET = "dataset_v2.zst"
 
 df = pd.read_pickle(Path(__file__).resolve().parent.parent / "data" / DATASET)
 
-app = Dash(external_stylesheets=dmc.styles.ALL)
+server = Flask(__name__)
+app = Dash(__name__, server=server, external_stylesheets=dmc.styles.ALL)
+
 opts = [["Keygen (μs)", "Keygen"], ["Sign (μs)", "Sign"], ["Verify (μs)", "Verify"]]
 
 app.layout = dmc.MantineProvider(
@@ -187,5 +190,4 @@ clientside_callback(
 
 
 if __name__ == "__main__":
-    # app.run(debug=True)
-    app.run()
+    app.run_server(debug=True)
