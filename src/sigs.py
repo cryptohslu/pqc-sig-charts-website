@@ -107,6 +107,9 @@ app.layout = dmc.MantineProvider(
                                         "scale": "log",
                                         "domain": [1, 10**6],
                                     },
+                                    radarProps={
+                                        "isAnimationActive": True,
+                                    },
                                     withLegend=True,
                                     series=[],
                                 ),
@@ -149,6 +152,9 @@ app.layout = dmc.MantineProvider(
                                         "angle": 60,
                                         "scale": "log",
                                         "domain": [1, 10**6],
+                                    },
+                                    radarProps={
+                                        "isAnimationActive": True,
                                     },
                                     withLegend=True,
                                     series=[],
