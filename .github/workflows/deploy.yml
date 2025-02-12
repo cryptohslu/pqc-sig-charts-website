@@ -1,0 +1,20 @@
+name: Deploy webapp
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
+jobs:
+  deploy:
+    name: Rsync webapp
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v4
+      - name: Install rsync
+        run: apt-get update && apt-get install rsync
+      - name: Copy webapp to host
+        run: |
+          ssh-agent bash -c "ssh-add <(echo '${{ secrets.SSH_PRIVATE_KEY }}') \
+                          && rsync -a --delete pqc-charts-website ${{ secrets.HOST }}:/home/nginx/pqc-charts/"
