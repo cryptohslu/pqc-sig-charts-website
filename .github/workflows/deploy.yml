@@ -22,9 +22,8 @@ jobs:
             chmod 700 ~/.ssh && \
             echo ${{ secrets.SSH_KNOWN_HOSTS }} > ~/.ssh/known_hosts && \
             chmod 600 ~/.ssh/known_hosts
-      - name: List files (debug step!)
-        run: ls -alR .
       - name: Copy webapp to host
         run: |
           ssh-agent bash -c "ssh-add <(echo '${{ secrets.SSH_PRIVATE_KEY }}') \
-                          && rsync -a -e 'ssh -p ${{ secrets.PORT }}' --delete pqc-charts-website ${{ secrets.HOST }}:/home/nginx/pqc-charts/"
+                          && rsync -ae 'ssh -p ${{ secrets.PORT }}' --delete --exclude='.*/' \
+                          ../pqc-charts-website ${{ secrets.HOST }}:/home/nginx/pqc-charts/"
