@@ -15,7 +15,7 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v4
       - name: Install rsync
-        run: apt-get update && apt-get install rsync
+        run: sudo apt-get update && sudo apt-get install rsync
       - name: Copy webapp to host
         run: |
           ssh-agent bash -c "ssh-add <(echo '${{ secrets.SSH_PRIVATE_KEY }}') \
