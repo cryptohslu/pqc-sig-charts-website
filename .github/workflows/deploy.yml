@@ -19,4 +19,4 @@ jobs:
       - name: Copy webapp to host
         run: |
           ssh-agent bash -c "ssh-add <(echo '${{ secrets.SSH_PRIVATE_KEY }}') \
-                          && rsync -a --delete pqc-charts-website ${{ secrets.HOST }}:/home/nginx/pqc-charts/"
+                          && rsync -a -e 'ssh -p ${{ secrets.PORT }}' --delete pqc-charts-website ${{ secrets.HOST }}:/home/nginx/pqc-charts/"
