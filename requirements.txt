@@ -1,6 +1,9 @@
 dash
 dash-iconify
 dash-mantine-components
+flask
 gunicorn
 pandas
+plotly
+Werkzeug
 zstandard
