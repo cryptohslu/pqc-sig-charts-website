@@ -9,7 +9,6 @@ OQS_VERSION = "0.12.0"
 DATASET = "dataset_v2.zst"
 
 df = pd.read_pickle(Path(__file__).resolve().parent.parent.parent / "data" / DATASET)
-df.index = df.index.droplevel(0)
 df = df.reset_index()
 
 selected_algorithms = df["Algorithm"].to_list()
