@@ -165,7 +165,7 @@ def create_alg_filters():
     return html.Div(
         [
             dmc.Container(
-                size="380px",
+                size="405px",
                 px="xs",
                 children=[
                     nist_security_level_filter(),
@@ -188,9 +188,16 @@ def create_navbar(data):
     return dmc.AppShellNavbar(
         id="navbar",
         children=[
-            create_alg_filters(),
+            dmc.ScrollArea(
+                [
+                    create_alg_filters(),
+                ],
+                type="scroll",
+                w=410,
+                h=1000,
+            )
         ],
-        p="md",
+        p="xs",
     )
 
 

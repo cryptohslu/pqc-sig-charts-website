@@ -28,7 +28,7 @@ def generate_radar_chart(alg_name):
     data = []
     raw_data = df[df["Algorithm"] == alg_name][features].squeeze(0)
     for i, val in enumerate(raw_data):
-        data.append({"feature": features[i], "value": val})
+        data.append({"feature": features[i].split("(")[0].strip(), "value": val})
     return html.Div(
         children=[
             dmc.Stack(
@@ -45,6 +45,7 @@ def generate_radar_chart(alg_name):
                     dmc.RadarChart(
                         id=f"radar_{alg_name}",
                         h=350,
+                        w=350,
                         data=data,
                         dataKey="feature",
                         withPolarGrid=True,
@@ -62,7 +63,8 @@ def generate_radar_chart(alg_name):
                     ),
                 ],
                 gap="xs",
-            )
+                align="center",
+            ),
         ]
     )
 
@@ -78,7 +80,8 @@ layout = [
     dcc.Store(id="pqc-data"),
     dmc.SimpleGrid(
         id="grid-overview",
-        cols={"base": 1, "sm": 2, "lg": 4},
+        type="container",
+        cols={"base": 1, "700px": 2, "1050px": 3, "1400px": 4, "1750px": 5},
         spacing="xs",
         children=[generate_radar_chart(alg) for alg in selected_algorithms],
     ),

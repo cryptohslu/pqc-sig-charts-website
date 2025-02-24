@@ -21,7 +21,7 @@ def create_appshell(data, url_base_pathname):
                 header={"height": 70},
                 padding="xl",
                 navbar={
-                    "width": 400,
+                    "width": 425,
                     "breakpoint": "sm",
                     "collapsed": {"mobile": True, "desktop": False},
                 },
