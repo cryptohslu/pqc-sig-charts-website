@@ -145,6 +145,7 @@ def update_filtered_algorithms(
         Input("n-selected-algs", "data"),
     ],
     State("url", "pathname"),
+    prevent_initial_call="initial_duplicate",
 )
 def update_shown_charts(algs, n_algs, url):
     if url != "/sig-charts/":

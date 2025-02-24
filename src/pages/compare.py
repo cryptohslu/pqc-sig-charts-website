@@ -3,7 +3,7 @@ import dash_mantine_components as dmc
 import pandas as pd
 from dash import Input, Output, State, callback, no_update
 
-from components.dataset import DATASET, FEATURES, OQS_VERSION
+from components.dataset import FEATURES
 from components.dataset import data as df
 
 COLORS = ["#ff6b6b", "#339af0", "#51cf66", "#fcc419", "#cc5de8"]
