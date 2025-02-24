@@ -86,6 +86,7 @@ def create_header(data, url_base_pathname):
                                             variant="subtle",
                                         ),
                                         href="https://www.hslu.ch/acs",
+                                        target="_blank",
                                     ),
                                     theme_toggle,
                                 ],
