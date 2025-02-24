@@ -145,7 +145,6 @@ def update_filtered_algorithms(
         Input("n-selected-algs", "data"),
     ],
     State("url", "pathname"),
-    prevent_initial_call=True,
 )
 def update_shown_charts(algs, n_algs, url):
     if url != "/sig-charts/":
@@ -207,7 +206,6 @@ def update_compare_selection(clicked):
         State({"type": "checkbox-alg", "index": ALL}, "checked"),
         State("n-selected-algs", "data"),
     ],
-    prevent_initial_call=True,
 )
 def disable_checkboxes(clicked, checked, selected):
     selected = selected["value"]
