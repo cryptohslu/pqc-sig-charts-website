@@ -76,7 +76,7 @@ layout = [
 
 
 @callback(
-    Output("grid-overview", "children"),
+    [Output("grid-overview", "children"), Output("website-title", "children")],
     [
         Input("nist-security-levels-checkbox", "value"),
         Input("pubkey-slider", "value"),
@@ -91,6 +91,7 @@ layout = [
 def update_selection_algorithms(
     nist_levels, pubkey, privkey, sig, keypair, sign, verify
 ):
+    n_algs_total = df.shape[0]
     try:
         # fmt: off
         tmp = pd.concat([df[df["NIST"] == int(l)] for l in nist_levels])
@@ -102,6 +103,9 @@ def update_selection_algorithms(
         tmp = tmp[(tmp["Verify (μs)"] >= int(verify[0])) & (tmp["Verify (μs)"] <= int(verify[1]))]
         # fmt: on
     except Exception:
-        return []
+
+        return [], f"PQC sigs chart (0 / {n_algs_total})"
     selected_algorithms = tmp["Algorithm"].to_list()
-    return [generate_radar_chart(alg) for alg in selected_algorithms]
+    return [
+        generate_radar_chart(alg) for alg in selected_algorithms
+    ], f"PQC sigs chart ({len(selected_algorithms)} / {n_algs_total})"
