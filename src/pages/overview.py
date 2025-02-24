@@ -2,7 +2,7 @@ from pathlib import Path
 import pandas as pd
 import dash
 import dash_mantine_components as dmc
-from dash import html
+from dash import html, callback, Input, Output, dcc
 
 
 OQS_VERSION = "0.12.0"
@@ -65,9 +65,49 @@ dash.register_page(
 )
 
 layout = [
+    dcc.Store(id="pqc-data"),
     dmc.SimpleGrid(
+        id="grid-overview",
         cols={"base": 1, "sm": 2, "lg": 4},
         spacing="xs",
         children=[generate_radar_chart(alg) for alg in selected_algorithms],
-    )
+    ),
 ]
+
+
+@callback(
+    [Output("grid-overview", "children"), Output("filter-drawer", "title")],
+    [
+        Input("nist-security-levels-checkbox", "value"),
+        Input("pubkey-slider", "value"),
+        Input("privkey-slider", "value"),
+        Input("signature-slider", "value"),
+        Input("keypair-slider", "value"),
+        Input("sign-slider", "value"),
+        Input("verify-slider", "value"),
+    ],
+    prevent_initial_call=True,
+)
+def update_selection_algorithms(
+    nist_levels, pubkey, privkey, sig, keypair, sign, verify
+):
+    try:
+        # fmt: off
+        tmp = pd.concat([df[df["NIST"] == int(l)] for l in nist_levels])
+        tmp = tmp[(tmp["Pubkey (bytes)"] >= int(pubkey[0])) & (tmp["Pubkey (bytes)"] <= int(pubkey[1]))]
+        tmp = tmp[(tmp["Privkey (bytes)"] >= int(privkey[0])) & (tmp["Privkey (bytes)"] <= int(privkey[1]))]
+        tmp = tmp[(tmp["Signature (bytes)"] >= int(sig[0])) & (tmp["Signature (bytes)"] <= int(sig[1]))]
+        tmp = tmp[(tmp["Keygen (μs)"] >= int(keypair[0])) & (tmp["Keygen (μs)"] <= int(keypair[1]))]
+        tmp = tmp[(tmp["Sign (μs)"] >= int(sign[0])) & (tmp["Sign (μs)"] <= int(sign[1]))]
+        tmp = tmp[(tmp["Verify (μs)"] >= int(verify[0])) & (tmp["Verify (μs)"] <= int(verify[1]))]
+        # fmt: on
+    except Exception:
+        n_algs = df.shape[0]
+        return [], f"Filter algorithms ({0}/{n_algs})"
+    selected_algorithms = tmp["Algorithm"].to_list()
+    n_algs = df.shape[0]
+    sel_algs = len(selected_algorithms)
+    return (
+        [generate_radar_chart(alg) for alg in selected_algorithms],
+        f"Filter algorithms ({sel_algs}/{n_algs})",
+    )

@@ -44,6 +44,7 @@ def sizes_filter():
                         min=0,
                         max=5488,
                         value=[0, 5_488],
+                        updatemode="drag",
                         label=None,
                         marks=[
                             {"value": 32, "label": "32"},
@@ -62,6 +63,7 @@ def sizes_filter():
                         min=0,
                         max=4896,
                         value=[0, 4_896],
+                        updatemode="drag",
                         label=None,
                         marks=[
                             {"value": 24, "label": "24"},
@@ -79,6 +81,7 @@ def sizes_filter():
                         min=0,
                         max=76_298,
                         value=[0, 76_298],
+                        updatemode="drag",
                         label=None,
                         marks=[
                             {"value": 180, "label": "180"},
@@ -107,6 +110,7 @@ def performance_filters():
                         min=0,
                         max=40_000,
                         value=[0, 40_000],
+                        updatemode="drag",
                         label=None,
                         marks=[
                             {"value": 0, "label": "0"},
@@ -123,6 +127,7 @@ def performance_filters():
                         min=0,
                         max=350_000,
                         value=[0, 350_000],
+                        updatemode="drag",
                         label=None,
                         marks=[
                             {"value": 0, "label": "0"},
@@ -139,6 +144,7 @@ def performance_filters():
                         min=0,
                         max=2500,
                         value=[0, 2500],
+                        updatemode="drag",
                         label=None,
                         marks=[
                             {"value": 0, "label": "0"},
@@ -159,7 +165,7 @@ def create_alg_filters():
     return html.Div(
         [
             dmc.Container(
-                size="350px",
+                size="380px",
                 px="xs",
                 children=[
                     nist_security_level_filter(),
@@ -180,10 +186,10 @@ def create_drawer(data):
     return html.Div(
         [
             dmc.Drawer(
-                title="Filter algorithms",
+                title="Filter algorithms (44/44)",
                 id="filter-drawer",
                 padding="md",
-                size="400px",
+                size="425px",
                 children=[create_alg_filters()],
             ),
         ]
