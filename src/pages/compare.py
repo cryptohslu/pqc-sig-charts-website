@@ -110,7 +110,10 @@ def generate_radar(algs):
 
 
 @callback(
-    Output("content", "children", allow_duplicate=True),
+    [
+        Output("content", "children", allow_duplicate=True),
+        Output("website-title", "children", allow_duplicate=True),
+    ],
     [
         Input("clicked-algs", "data"),
         Input("url", "pathname"),
@@ -128,7 +131,10 @@ def update_comparison(clicked_algs, url, n_clicked):
     if n_clicked["value"] < 1:
         return no_update
 
-    return [
-        generate_radar(clicked_algs),
-        generate_table(clicked_algs),
-    ]
+    return (
+        [
+            generate_radar(clicked_algs),
+            generate_table(clicked_algs),
+        ],
+        "PQC sigs chart",
+    )

@@ -44,7 +44,10 @@ def generate_radar_chart(alg_name):
                         justify="center",
                     ),
                     dmc.RadarChart(
-                        id=f"radar_{alg_name}",
+                        id={
+                            "type": "radar-chart",
+                            "index": f"radar_{alg_name}",
+                        },
                         h=350,
                         w=350,
                         data=data,
@@ -140,7 +143,7 @@ def update_filtered_algorithms(
 @callback(
     [
         Output("content", "children", allow_duplicate=True),
-        Output("website-title", "children"),
+        Output("website-title", "children", allow_duplicate=True),
     ],
     [
         Input("selected-algs", "data"),
