@@ -37,6 +37,8 @@ def generate_radar_chart(alg_name):
                                 size="xs",
                                 variant="filled",
                                 label=dmc.Text(alg_name, ta="center"),
+                                persistence=True,
+                                persistence_type="session",
                             ),
                         ],
                         justify="center",
@@ -166,7 +168,10 @@ def update_shown_charts(algs, n_algs, url):
 @callback(
     Output("clicked-algs", "data"),
     Input({"type": "checkbox-alg", "index": ALL}, "checked"),
-    [State({"type": "checkbox-alg", "index": ALL}, "id"), State("url", "pathname")],
+    [
+        State({"type": "checkbox-alg", "index": ALL}, "id"),
+        State("url", "pathname"),
+    ],
 )
 def update_clicked_algorithms(values, ids, url):
     if url == "/sig-charts/compare/":
