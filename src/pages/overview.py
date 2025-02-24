@@ -167,7 +167,6 @@ def update_shown_charts(algs, n_algs, url):
     Output("clicked-algs", "data"),
     Input({"type": "checkbox-alg", "index": ALL}, "checked"),
     [State({"type": "checkbox-alg", "index": ALL}, "id"), State("url", "pathname")],
-    prevent_initial_call=True,
 )
 def update_clicked_algorithms(values, ids, url):
     if url == "/sig-charts/compare/":
@@ -189,11 +188,11 @@ def update_clicked_algorithms(values, ids, url):
         Output("n-clicked-algs", "data"),
     ],
     Input("clicked-algs", "data"),
-    prevent_initial_call=True,
 )
 def update_compare_selection(clicked):
     if clicked is None:
         return no_update
+
     n_clicked = 0
     for alg in clicked:
         if clicked[alg]:
