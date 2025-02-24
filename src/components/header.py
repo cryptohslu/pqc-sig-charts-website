@@ -1,5 +1,5 @@
 import dash_mantine_components as dmc
-from dash import Input, Output, clientside_callback, html
+from dash import Input, Output, clientside_callback, html, dcc
 from dash_iconify import DashIconify
 
 theme_toggle = dmc.Switch(
@@ -21,6 +21,11 @@ def create_header(data, url_base_pathname):
     return dmc.AppShellHeader(
         px=25,
         children=[
+            dcc.Location(id="url", refresh=False),
+            dcc.Store(id="n-selected-algs"),
+            dcc.Store(id="selected-algs"),
+            dcc.Store(id="n-clicked-algs"),
+            dcc.Store(id="clicked-algs"),
             dmc.Stack(
                 justify="center",
                 h=70,
@@ -31,12 +36,15 @@ def create_header(data, url_base_pathname):
                             dmc.Group(
                                 [
                                     dmc.ActionIcon(
-                                        DashIconify(icon="clarity:filter-grid-circle-solid", width=20),
+                                        DashIconify(
+                                            icon="clarity:filter-grid-circle-solid",
+                                            width=20,
+                                        ),
                                         id="filter-button",
                                         size="lg",
                                         variant="light",
                                         radius="xl",
-                                        n_clicks=0
+                                        n_clicks=0,
                                     ),
                                     dmc.Anchor(
                                         ["PQC sigs chart (44 / 44)"],
@@ -56,10 +64,21 @@ def create_header(data, url_base_pathname):
                                 h=31,
                                 gap="xl",
                                 children=[
-                                    dmc.Button("Compare", variant="subtle"),
                                     html.A(
-                                        dmc.Button("HSLU", variant="subtle"),
-                                        href="https://www.hslu.ch",
+                                        dmc.Button(
+                                            "Overview",
+                                            variant="subtle",
+                                            id="overview-button",
+                                        ),
+                                        href="/sig-charts",
+                                    ),
+                                    html.A(
+                                        dmc.Button(
+                                            "Compare",
+                                            variant="subtle",
+                                            id="compare-button",
+                                        ),
+                                        href="/sig-charts/compare",
                                     ),
                                     html.A(
                                         dmc.Button(
@@ -74,7 +93,7 @@ def create_header(data, url_base_pathname):
                         ),
                     ],
                 ),
-            )
+            ),
         ],
     )
 
