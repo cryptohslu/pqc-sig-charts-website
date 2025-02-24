@@ -22,10 +22,10 @@ def create_header(data, url_base_pathname):
         px=25,
         children=[
             dcc.Location(id="url", refresh=False),
-            dcc.Store(id="n-selected-algs"),
-            dcc.Store(id="selected-algs"),
-            dcc.Store(id="n-clicked-algs"),
-            dcc.Store(id="clicked-algs"),
+            dcc.Store(id="n-selected-algs", storage_type="session"),
+            dcc.Store(id="selected-algs", storage_type="session"),
+            dcc.Store(id="n-clicked-algs", storage_type="session"),
+            dcc.Store(id="clicked-algs", storage_type="session"),
             dmc.Stack(
                 justify="center",
                 h=70,
@@ -64,21 +64,21 @@ def create_header(data, url_base_pathname):
                                 h=31,
                                 gap="xl",
                                 children=[
-                                    html.A(
+                                    dcc.Link(
                                         dmc.Button(
                                             "Overview",
                                             variant="subtle",
                                             id="overview-button",
                                         ),
-                                        href="/sig-charts",
+                                        href="/sig-charts/",
                                     ),
-                                    html.A(
+                                    dcc.Link(
                                         dmc.Button(
                                             "Compare",
                                             variant="subtle",
                                             id="compare-button",
                                         ),
-                                        href="/sig-charts/compare",
+                                        href="/sig-charts/compare/",
                                     ),
                                     html.A(
                                         dmc.Button(
