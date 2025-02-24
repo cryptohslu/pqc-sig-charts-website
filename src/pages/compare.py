@@ -1,11 +1,10 @@
 import dash
+import dash_mantine_components as dmc
 import pandas as pd
 from dash import Input, Output, State, callback, no_update
-import dash_mantine_components as dmc
 
-from src.components.dataset import OQS_VERSION, DATASET, FEATURES
-from src.components.dataset import data as df
-
+from components.dataset import DATASET, FEATURES, OQS_VERSION
+from components.dataset import data as df
 
 COLORS = ["#ff6b6b", "#339af0", "#51cf66", "#fcc419", "#cc5de8"]
 
@@ -32,10 +31,11 @@ df = df[
 df.rename(columns={"NIST": "NIST Security Level"}, inplace=True)
 
 layout = [
-    dmc.Stack(
+    dmc.Group(
         [],
         id="content",
         align="center",
+        justify="center",
         gap="xs",
     )
 ]
@@ -53,16 +53,20 @@ def generate_table(algs):
         times = [f"{row.values[i]:.1f}" for i in range(5, 8)]
         data.append([alg_name, nist_level] + sizes + times)
 
-    return dmc.Table(
-        striped=True,
-        highlightOnHover=True,
-        withTableBorder=True,
-        withColumnBorders=True,
-        data={
-            "caption": f"Raw data generated with liboqs {OQS_VERSION} ({DATASET})",
-            "head": df.columns.to_list(),
-            "body": data,
-        },
+    return dmc.Container(
+        [
+            dmc.Table(
+                striped=True,
+                highlightOnHover=True,
+                withTableBorder=True,
+                withColumnBorders=True,
+                data={
+                    "head": df.columns.to_list(),
+                    "body": data,
+                },
+            )
+        ],
+        size="650px",
     )
 
 

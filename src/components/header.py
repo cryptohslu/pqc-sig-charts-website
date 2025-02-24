@@ -1,5 +1,5 @@
 import dash_mantine_components as dmc
-from dash import Input, Output, clientside_callback, html, dcc
+from dash import Input, Output, clientside_callback, dcc, html
 from dash_iconify import DashIconify
 
 theme_toggle = dmc.Switch(

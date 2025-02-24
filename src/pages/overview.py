@@ -3,10 +3,10 @@ from pathlib import Path
 import dash
 import dash_mantine_components as dmc
 import pandas as pd
-from dash import Input, Output, callback, dcc, html, ALL, State, no_update
+from dash import ALL, Input, Output, State, callback, dcc, html, no_update
 
-from src.components.dataset import data as df
-from src.components.dataset import FEATURES
+from components.dataset import FEATURES
+from components.dataset import data as df
 
 df = df.reset_index()
 
@@ -192,6 +192,8 @@ def update_clicked_algorithms(values, ids, url):
     prevent_initial_call=True,
 )
 def update_compare_selection(clicked):
+    if clicked is None:
+        return no_update
     n_clicked = 0
     for alg in clicked:
         if clicked[alg]:
