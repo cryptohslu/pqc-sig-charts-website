@@ -33,13 +33,18 @@ def create_appshell(data, url_base_pathname):
 
 @callback(
     Output("appshell", "navbar"),
-    Input("mobile-burger", "opened"),
-    Input("desktop-burger", "opened"),
+    Input("filter-button", "n_clicks"),
     State("appshell", "navbar"),
 )
-def toggle_navbar(mobile_opened, desktop_opened, navbar):
-    navbar["collapsed"] = {
-        "mobile": not mobile_opened,
-        "desktop": not desktop_opened,
-    }
+def toggle_navbar(n_clicks, navbar):
+    if n_clicks % 2 == 0:
+        navbar["collapsed"] = {
+            "mobile": False,
+            "desktop": False,
+        }
+    else:
+        navbar["collapsed"] = {
+            "mobile": True,
+            "desktop": True,
+        }
     return navbar

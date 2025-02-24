@@ -1,5 +1,5 @@
 import dash_mantine_components as dmc
-from dash import Input, Output, clientside_callback
+from dash import Input, Output, clientside_callback, html
 from dash_iconify import DashIconify
 
 theme_toggle = dmc.Switch(
@@ -30,17 +30,13 @@ def create_header(data, url_base_pathname):
                         dmc.GridCol(
                             dmc.Group(
                                 [
-                                    dmc.Burger(
-                                        id="mobile-burger",
-                                        size="sm",
-                                        hiddenFrom="sm",
-                                        opened=False,
-                                    ),
-                                    dmc.Burger(
-                                        id="desktop-burger",
-                                        size="sm",
-                                        visibleFrom="sm",
-                                        opened=True,
+                                    dmc.ActionIcon(
+                                        DashIconify(icon="clarity:filter-grid-circle-solid", width=20),
+                                        id="filter-button",
+                                        size="lg",
+                                        variant="light",
+                                        radius="xl",
+                                        n_clicks=0
                                     ),
                                     dmc.Anchor(
                                         ["PQC sigs chart (44 / 44)"],
@@ -61,10 +57,16 @@ def create_header(data, url_base_pathname):
                                 gap="xl",
                                 children=[
                                     dmc.Button("Compare", variant="subtle"),
-                                    dmc.Button("HSLU", variant="subtle"),
-                                    dmc.Button(
-                                        "Applied Cyber Security Research Lab",
-                                        variant="subtle",
+                                    html.A(
+                                        dmc.Button("HSLU", variant="subtle"),
+                                        href="https://www.hslu.ch",
+                                    ),
+                                    html.A(
+                                        dmc.Button(
+                                            "Applied Cyber Security Research Lab",
+                                            variant="subtle",
+                                        ),
+                                        href="https://www.hslu.ch/acs",
                                     ),
                                     theme_toggle,
                                 ],

@@ -21,6 +21,8 @@ features = [
     "Verify (μs)",
 ]
 
+selected = 0
+
 
 def generate_radar_chart(alg_name):
     data = []
@@ -31,7 +33,15 @@ def generate_radar_chart(alg_name):
         children=[
             dmc.Stack(
                 [
-                    dmc.Text(alg_name, c="blue", ta="center"),
+                    dmc.Group(
+                        [
+                            dmc.Checkbox(
+                                id=f"checkbox-{alg_name}", checked=False, size="xs"
+                            ),
+                            dmc.Text(alg_name, c="blue", ta="center"),
+                        ],
+                        justify="center",
+                    ),
                     dmc.RadarChart(
                         id=f"radar_{alg_name}",
                         h=350,
