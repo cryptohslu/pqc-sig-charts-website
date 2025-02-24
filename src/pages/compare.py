@@ -31,11 +31,11 @@ df = df[
 df.rename(columns={"NIST": "NIST Security Level"}, inplace=True)
 
 layout = [
-    dmc.Group(
+    dmc.Stack(
         [],
         id="content",
         align="center",
-        justify="center",
+        justify="flex-start",
         gap="xs",
     )
 ]
@@ -66,7 +66,7 @@ def generate_table(algs):
                 },
             )
         ],
-        size="650px",
+        size="90%",
     )
 
 
@@ -89,8 +89,8 @@ def generate_radar(algs):
             count += 1
 
     return dmc.RadarChart(
-        w=650,
-        h=650,
+        w=600,
+        h=600,
         data=data,
         dataKey="feature",
         withPolarGrid=True,
