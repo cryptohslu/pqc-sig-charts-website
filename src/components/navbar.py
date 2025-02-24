@@ -1,5 +1,5 @@
 import dash_mantine_components as dmc
-from dash import Input, Output, callback, html
+from dash import ALL, Input, Output, State, callback, html
 from dash_iconify import DashIconify
 
 
@@ -175,9 +175,9 @@ def create_alg_filters():
                     dmc.Space(h="xl"),
                     performance_filters(),
                     dmc.Button(
-                        "Reset all filters",
+                        "Reset all",
                         id="reset-button",
-                        leftSection=DashIconify(icon="carbon:reset"),
+                        # leftSection=DashIconify(icon="carbon:reset"),
                     ),
                 ],
             )
@@ -211,11 +211,13 @@ def create_navbar(data):
         Output("keypair-slider", "value"),
         Output("sign-slider", "value"),
         Output("verify-slider", "value"),
+        Output({"type": "checkbox-alg", "index": ALL}, "checked"),
     ],
     Input("reset-button", "n_clicks"),
+    State({"type": "checkbox-alg", "index": ALL}, "checked"),
     prevent_initial_call=True,
 )
-def reset_filters(n_clicks):
+def reset_filters(n_clicks, algs):
     return (
         ["1", "2", "3", "4", "5"],
         [0, 5_488],
@@ -224,4 +226,5 @@ def reset_filters(n_clicks):
         [0, 40_000],
         [0, 350_000],
         [0, 2500],
+        len(algs) * [False],
     )
