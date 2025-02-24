@@ -122,7 +122,10 @@ def update_comparison(clicked_algs, url, n_clicked):
     if url != "/sig-charts/compare/":
         return no_update
 
-    if n_clicked["value"] is None or n_clicked["value"] < 1:
+    if n_clicked is None:
+        return no_update
+
+    if n_clicked["value"] < 1:
         return no_update
 
     return [
