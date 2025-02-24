@@ -1,7 +1,7 @@
 from pathlib import Path
 
-import dash_mantine_components as dmc
 import dash
+import dash_mantine_components as dmc
 from dash import Dash, _dash_renderer
 from flask import Flask
 from werkzeug.middleware.proxy_fix import ProxyFix

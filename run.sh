@@ -6,4 +6,5 @@ if [ ! -d venv ]; then
     venv/bin/pip install -r requirements.txt
 fi
 
-venv/bin/gunicorn -b 0.0.0.0:7000 -w 1 src.sigs:server
+cd src
+../venv/bin/gunicorn -b 0.0.0.0:7000 -w 1 run:server
