@@ -1,7 +1,6 @@
 import dash_mantine_components as dmc
-from dash import Output, Input, clientside_callback
+from dash import Input, Output, clientside_callback
 from dash_iconify import DashIconify
-
 
 theme_toggle = dmc.Switch(
     offLabel=DashIconify(

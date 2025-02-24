@@ -1,5 +1,5 @@
 import dash_mantine_components as dmc
-from dash import Output, Input, dcc, page_container, State, callback
+from dash import Input, Output, State, callback, dcc, page_container
 
 from components.header import create_header
 from components.navbar import create_navbar

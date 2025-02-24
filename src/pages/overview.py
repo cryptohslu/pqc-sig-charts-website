@@ -1,9 +1,9 @@
 from pathlib import Path
-import pandas as pd
+
 import dash
 import dash_mantine_components as dmc
-from dash import html, callback, Input, Output, dcc
-
+import pandas as pd
+from dash import Input, Output, callback, dcc, html
 
 OQS_VERSION = "0.12.0"
 DATASET = "dataset_v2.zst"

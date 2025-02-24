@@ -1,5 +1,5 @@
 import dash_mantine_components as dmc
-from dash import html, Output, Input, callback
+from dash import Input, Output, callback, html
 from dash_iconify import DashIconify
 
 
