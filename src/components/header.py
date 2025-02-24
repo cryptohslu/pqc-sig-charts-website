@@ -31,16 +31,23 @@ def create_header(data, url_base_pathname):
                         dmc.GridCol(
                             dmc.Group(
                                 [
-                                    dmc.ActionIcon(
-                                        DashIconify(icon="clarity:filter-grid-circle-solid", width=20),
-                                        id="filter-button",
-                                        size="lg",
-                                        variant="light",
-                                        radius="xl",
-                                        n_clicks=0,
+                                    dmc.Burger(
+                                        id="mobile-burger",
+                                        size="sm",
+                                        hiddenFrom="sm",
+                                        opened=False,
+                                    ),
+                                    dmc.Burger(
+                                        id="desktop-burger",
+                                        size="sm",
+                                        visibleFrom="sm",
+                                        opened=True,
                                     ),
                                     dmc.Anchor(
-                                        "PQC sigs chart", size="xl", href=url_base_pathname, underline=False
+                                        "PQC sigs chart",
+                                        size="xl",
+                                        href=url_base_pathname,
+                                        underline=False,
                                     ),
                                 ]
                             ),
@@ -55,7 +62,10 @@ def create_header(data, url_base_pathname):
                                 children=[
                                     dmc.Button("Compare", variant="subtle"),
                                     dmc.Button("HSLU", variant="subtle"),
-                                    dmc.Button("Applied Cyber Security Research Lab", variant="subtle"),
+                                    dmc.Button(
+                                        "Applied Cyber Security Research Lab",
+                                        variant="subtle",
+                                    ),
                                     theme_toggle,
                                 ],
                             ),

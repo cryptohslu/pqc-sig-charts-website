@@ -76,7 +76,7 @@ layout = [
 
 
 @callback(
-    [Output("grid-overview", "children"), Output("filter-drawer", "title")],
+    Output("grid-overview", "children"),
     [
         Input("nist-security-levels-checkbox", "value"),
         Input("pubkey-slider", "value"),
@@ -102,12 +102,6 @@ def update_selection_algorithms(
         tmp = tmp[(tmp["Verify (μs)"] >= int(verify[0])) & (tmp["Verify (μs)"] <= int(verify[1]))]
         # fmt: on
     except Exception:
-        n_algs = df.shape[0]
-        return [], f"Filter algorithms ({0}/{n_algs})"
+        return []
     selected_algorithms = tmp["Algorithm"].to_list()
-    n_algs = df.shape[0]
-    sel_algs = len(selected_algorithms)
-    return (
-        [generate_radar_chart(alg) for alg in selected_algorithms],
-        f"Filter algorithms ({sel_algs}/{n_algs})",
-    )
+    return [generate_radar_chart(alg) for alg in selected_algorithms]

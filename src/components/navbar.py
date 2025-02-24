@@ -171,9 +171,11 @@ def create_alg_filters():
                     nist_security_level_filter(),
                     dmc.Space(h="xl"),
                     sizes_filter(),
+                    dmc.Space(h="xl"),
                     performance_filters(),
                     dmc.Button(
                         "Reset all filters",
+                        id="reset-button",
                         leftSection=DashIconify(icon="carbon:reset"),
                     ),
                 ],
@@ -182,24 +184,36 @@ def create_alg_filters():
     )
 
 
-def create_drawer(data):
-    return html.Div(
-        [
-            dmc.Drawer(
-                title="Filter algorithms (44/44)",
-                id="filter-drawer",
-                padding="md",
-                size="425px",
-                children=[create_alg_filters()],
-            ),
-        ]
+def create_navbar(data):
+    return dmc.AppShellNavbar(
+        id="navbar",
+        children=[
+            create_alg_filters(),
+        ],
+        p="md",
     )
 
 
 @callback(
-    Output("filter-drawer", "opened"),
-    Input("filter-button", "n_clicks"),
+    [
+        Output("nist-security-levels-checkbox", "value"),
+        Output("pubkey-slider", "value"),
+        Output("privkey-slider", "value"),
+        Output("signature-slider", "value"),
+        Output("keypair-slider", "value"),
+        Output("sign-slider", "value"),
+        Output("verify-slider", "value"),
+    ],
+    Input("reset-button", "n_clicks"),
     prevent_initial_call=True,
 )
-def drawer(input_value):
-    return True
+def reset_filters(n_clicks):
+    return (
+        ["1", "2", "3", "4", "5"],
+        [0, 5_488],
+        [0, 4_896],
+        [0, 76_298],
+        [0, 40_000],
+        [0, 350_000],
+        [0, 2500],
+    )
