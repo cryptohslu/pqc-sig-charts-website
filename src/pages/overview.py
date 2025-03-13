@@ -138,7 +138,6 @@ layout = [
 )
 def update_filtered_algorithms(nist_levels, pubkey, privkey, sig, keypair, sign, verify):
     all_algs = df["Algorithm"].to_list()
-    # fmt: off
     try:
         tmp = pd.concat([df[df["NIST"] == int(l)] for l in nist_levels])
     except ValueError:
@@ -149,7 +148,6 @@ def update_filtered_algorithms(nist_levels, pubkey, privkey, sig, keypair, sign,
     tmp = tmp[(tmp["Keygen (μs)"] >= int(keypair[0])) & (tmp["Keygen (μs)"] <= int(keypair[1]))]
     tmp = tmp[(tmp["Sign (μs)"] >= int(sign[0])) & (tmp["Sign (μs)"] <= int(sign[1]))]
     tmp = tmp[(tmp["Verify (μs)"] >= int(verify[0])) & (tmp["Verify (μs)"] <= int(verify[1]))]
-    # fmt: on
 
     selected = tmp["Algorithm"].to_list()
     selected_algs = {}
