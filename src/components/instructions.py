@@ -60,6 +60,7 @@ def generate_instructions_alert():
                 id="alert-instructions",
                 color="blue",
                 withCloseButton=True,
+                hide=True,
             ),
             dmc.Space(h=20),
         ]

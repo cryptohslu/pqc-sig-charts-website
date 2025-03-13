@@ -1,5 +1,5 @@
 import dash_mantine_components as dmc
-from dash import ALL, Input, Output, State, callback, html
+from dash import ALL, Input, Output, State, callback, html, no_update
 from dash_iconify import DashIconify
 
 
@@ -175,12 +175,16 @@ def create_alg_filters():
                     dmc.Space(h="xl"),
                     performance_filters(),
                     dmc.Button(
-                        "Reset all",
+                        "Reset All",
                         id="reset-button",
-                        # leftSection=DashIconify(icon="carbon:reset"),
+                        leftSection=DashIconify(icon="tabler:zoom-reset"),
                     ),
                     dmc.Space(h="xs"),
-                    dmc.Button("How-to", id="button-instructions"),
+                    dmc.Button(
+                        "How-To",
+                        id="button-instructions",
+                        leftSection=DashIconify(icon="material-symbols:docs-rounded"),
+                    ),
                 ],
             )
         ]
