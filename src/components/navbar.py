@@ -179,6 +179,8 @@ def create_alg_filters():
                         id="reset-button",
                         # leftSection=DashIconify(icon="carbon:reset"),
                     ),
+                    dmc.Space(h="xs"),
+                    dmc.Button("How-to", id="button-instructions"),
                 ],
             )
         ]
@@ -228,3 +230,13 @@ def reset_filters(n_clicks, algs):
         [0, 2500],
         len(algs) * [False],
     )
+
+
+@callback(
+    Output("alert-instructions", "hide"),
+    Input("button-instructions", "n_clicks"),
+    State("alert-instructions", "hide"),
+    prevent_initial_call=True,
+)
+def alert(n_clicks, hide):
+    return not hide

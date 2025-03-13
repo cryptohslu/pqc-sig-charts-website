@@ -36,16 +36,14 @@ layout = [
         id="content",
         align="center",
         justify="flex-start",
-        gap="xs",
-    )
+        gap=0,
+    ),
 ]
 
 
 def generate_table(algs):
     data = []
-    tmp = pd.concat(
-        [df[df["Algorithm"] == alg_name] for alg_name in algs if algs[alg_name]]
-    )
+    tmp = pd.concat([df[df["Algorithm"] == alg_name] for alg_name in algs if algs[alg_name]])
     for i, row in tmp.iterrows():
         alg_name = row["Algorithm"]
         nist_level = row["NIST Security Level"]
@@ -72,9 +70,7 @@ def generate_table(algs):
 
 def generate_radar(algs):
     data = []
-    tmp = pd.concat(
-        [df[df["Algorithm"] == alg_name] for alg_name in algs if algs[alg_name]]
-    )
+    tmp = pd.concat([df[df["Algorithm"] == alg_name] for alg_name in algs if algs[alg_name]])
     for feature in FEATURES:
         serie = {"feature": feature}
         for i, row in tmp.iterrows():

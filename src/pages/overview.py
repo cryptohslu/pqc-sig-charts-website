@@ -7,6 +7,7 @@ from dash import ALL, Input, Output, State, callback, dcc, html, no_update
 
 from components.dataset import FEATURES
 from components.dataset import data as df
+from components.instructions import generate_instructions_alert
 
 df = df.reset_index()
 
@@ -99,6 +100,7 @@ dash.register_page(
 )
 
 layout = [
+    generate_instructions_alert(),
     dmc.SimpleGrid(
         id="content",
         type="container",
@@ -115,7 +117,7 @@ layout = [
             "2500px": 10,
         },
         spacing=0,
-        verticalSpacing=0,
+        verticalSpacing="xs",
         children=[generate_radar_chart(alg) for alg in df["Algorithm"].to_list()],
     ),
 ]
