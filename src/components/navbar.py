@@ -16,7 +16,7 @@ def nist_security_level_filter():
                                     dmc.Chip("1", value="1"),
                                     dmc.Chip("2", value="2"),
                                     dmc.Chip("3", value="3"),
-                                    dmc.Chip("4", value="4"),
+                                    dmc.Chip("4", value="4", disabled=True),
                                     dmc.Chip("5", value="5"),
                                 ],
                                 multiple=True,
@@ -175,15 +175,15 @@ def create_alg_filters():
                     dmc.Space(h="xl"),
                     performance_filters(),
                     dmc.Button(
-                        "Reset All",
-                        id="reset-button",
-                        leftSection=DashIconify(icon="tabler:zoom-reset"),
-                    ),
-                    dmc.Space(h="xs"),
-                    dmc.Button(
                         "How-To",
                         id="button-instructions",
                         leftSection=DashIconify(icon="material-symbols:docs-rounded"),
+                    ),
+                    dmc.Space(h="xs"),
+                    dmc.Button(
+                        "Reset All",
+                        id="reset-button",
+                        leftSection=DashIconify(icon="tabler:zoom-reset"),
                     ),
                 ],
             )

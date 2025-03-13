@@ -185,7 +185,7 @@ def update_shown_charts(algs, n_algs, url):
 
     return (
         charts,
-        f"PQC sigs chart ({n_algs["value"]} / {n_algs_total})",
+        f"PQC SIG Charts ({n_algs["value"]} / {n_algs_total})",
     )
 
 

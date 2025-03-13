@@ -3,9 +3,7 @@ from dash import Input, Output, clientside_callback, dcc, html
 from dash_iconify import DashIconify
 
 theme_toggle = dmc.Switch(
-    offLabel=DashIconify(
-        icon="radix-icons:sun", width=15, color=dmc.DEFAULT_THEME["colors"]["yellow"][8]
-    ),
+    offLabel=DashIconify(icon="radix-icons:sun", width=15, color=dmc.DEFAULT_THEME["colors"]["yellow"][8]),
     onLabel=DashIconify(
         icon="radix-icons:moon",
         width=15,
@@ -47,7 +45,7 @@ def create_header(data, url_base_pathname):
                                         n_clicks=0,
                                     ),
                                     dmc.Anchor(
-                                        ["PQC sigs chart (44 / 44)"],
+                                        ["PQC SIG Charts (44 / 44)"],
                                         id="website-title",
                                         size="xl",
                                         href=url_base_pathname,
