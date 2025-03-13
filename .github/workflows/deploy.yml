@@ -23,7 +23,7 @@ jobs:
             echo ${{ secrets.SSH_KNOWN_HOSTS }} > ~/.ssh/known_hosts && \
             chmod 600 ~/.ssh/known_hosts
       - name: List files
-        run: ls -alR .
+        run: ls -alR ..
       - name: Copy webapp to host
         run: |
           ssh-agent bash -c "ssh-add <(echo '${{ secrets.SSH_PRIVATE_KEY }}') \
