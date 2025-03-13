@@ -22,51 +22,69 @@ def generate_radar_chart(alg_name):
     raw_data = df[df["Algorithm"] == alg_name][FEATURES].squeeze(0)
     for i, val in enumerate(raw_data):
         data.append({"feature": FEATURES[i].split("(")[0].strip(), "value": val})
-    return html.Div(
+    return dmc.Box(
         children=[
             dmc.Stack(
                 [
-                    dmc.Group(
-                        [
-                            dmc.Checkbox(
-                                id={
-                                    "type": "checkbox-alg",
-                                    "index": f"checkbox-{alg_name}",
-                                },
-                                checked=False,
-                                size="xs",
-                                variant="filled",
-                                label=dmc.Text(alg_name, ta="center"),
-                                persistence=True,
-                                persistence_type="session",
-                            ),
-                        ],
-                        justify="center",
+                    dmc.Checkbox(
+                        id={
+                            "type": "checkbox-alg",
+                            "index": f"checkbox-{alg_name}",
+                        },
+                        checked=False,
+                        size="xs",
+                        variant="filled",
+                        label=dmc.Text(
+                            alg_name,
+                            ta="center",
+                            style={
+                                "fontSize": "9pt",
+                                "whiteSpace": "nowrap",
+                                "overflow": "hidden",
+                                "textOverflow": "ellipsis",
+                            },
+                        ),
+                        persistence=True,
+                        persistence_type="session",
                     ),
                     dmc.RadarChart(
                         id={
                             "type": "radar-chart",
                             "index": f"radar_{alg_name}",
                         },
-                        h=350,
-                        w=350,
+                        h=250,
+                        w=250,
                         data=data,
                         dataKey="feature",
                         withPolarGrid=True,
                         withPolarAngleAxis=True,
                         withPolarRadiusAxis=True,
                         polarRadiusAxisProps={
-                            "angle": 60,
+                            "angle": 90,
                             "scale": "log",
-                            "domain": [1, 10**6],
+                            "domain": [1, 10**5],
+                            "tick": False,
                         },
                         radarProps={
                             "isAnimationActive": False,
                         },
+                        radarChartProps={
+                            "margin": {
+                                "top": 0,
+                                "right": 0,
+                                "bottom": 0,
+                                "left": 0,
+                            },
+                            "outerRadius": "40%",
+                        },
+                        polarGridProps={
+                            "outerRadius": -10,
+                        },
                         series=[{"name": "value", "color": "blue.4", "opacity": 0.5}],
                     ),
                 ],
-                gap="xs",
+                gap=0,
+                p=0,
                 align="center",
             ),
         ]
@@ -86,13 +104,18 @@ layout = [
         type="container",
         cols={
             "base": 1,
-            "700px": 2,
-            "1050px": 3,
-            "1400px": 4,
-            "1750px": 5,
-            "2100px": 6,
+            "500px": 2,
+            "750px": 3,
+            "1000px": 4,
+            "1250px": 5,
+            "1500px": 6,
+            "1750px": 7,
+            "2000px": 8,
+            "2250px": 9,
+            "2500px": 10,
         },
-        spacing="xs",
+        spacing=0,
+        verticalSpacing=0,
         children=[generate_radar_chart(alg) for alg in df["Algorithm"].to_list()],
     ),
 ]
@@ -113,9 +136,7 @@ layout = [
         Input("verify-slider", "value"),
     ],
 )
-def update_filtered_algorithms(
-    nist_levels, pubkey, privkey, sig, keypair, sign, verify
-):
+def update_filtered_algorithms(nist_levels, pubkey, privkey, sig, keypair, sign, verify):
     all_algs = df["Algorithm"].to_list()
     # fmt: off
     try:
