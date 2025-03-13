@@ -95,7 +95,7 @@ def generate_radar_chart(alg_name):
 dash.register_page(
     __name__,
     "/",
-    title="PQC sigs overview",
+    title="PQC DS",
     description="Comparative of PQC sigs available in OQS liboqs library.",
 )
 

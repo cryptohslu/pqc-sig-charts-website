@@ -11,7 +11,7 @@ COLORS = ["#ff6b6b", "#339af0", "#51cf66", "#fcc419", "#cc5de8"]
 dash.register_page(
     __name__,
     "/compare",
-    title="PQC sigs overview",
+    title="PQC DS",
     description="Comparative of PQC sigs available in OQS liboqs library.",
 )
 
@@ -132,5 +132,5 @@ def update_comparison(clicked_algs, url, n_clicked):
             generate_radar(clicked_algs),
             generate_table(clicked_algs),
         ],
-        "PQC sigs chart",
+        "PQC SIG Charts",
     )
