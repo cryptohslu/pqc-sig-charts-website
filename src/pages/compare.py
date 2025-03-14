@@ -132,5 +132,5 @@ def update_comparison(clicked_algs, url, n_clicked):
             generate_radar(clicked_algs),
             generate_table(clicked_algs),
         ],
-        "PQC SIG Charts",
+        "PQC Signatures",
     )

@@ -45,7 +45,7 @@ def create_header(data, url_base_pathname):
                                         n_clicks=0,
                                     ),
                                     dmc.Anchor(
-                                        ["PQC SIG Charts (44 / 44)"],
+                                        ["PQC Signatures (44 / 44)"],
                                         id="website-title",
                                         size="xl",
                                         href=url_base_pathname,
