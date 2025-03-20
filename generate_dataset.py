@@ -283,7 +283,7 @@ def main():
     }
     filename = datetime.now().isoformat() + ".zst"
     df.to_pickle(Path(__file__).resolve().parent / "data" / filename, compression="zstd")
-    print(f"\nDataFrame generated in {t1:.0f} seconds")
+    print(f"\nDataFrame generated in {t1 / 60 / 60:.0f}h {(t1 / 60) % 60:.0f}m {t1 % 60}s")
 
 
 if __name__ == "__main__":
