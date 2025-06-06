@@ -1,6 +1,7 @@
 import secrets
 import time
 from datetime import datetime
+from os import symlink
 from pathlib import Path
 
 import Crypto
@@ -319,8 +320,9 @@ def main():
     df_pqc = benchmark_pqc_sigs(debug)
     df = pd.concat([df_traditional, df_pqc]).sort_index()
     t1 = time.perf_counter() - t0
+    ts = datetime.now().isoformat()
     df.attrs = {
-        "timestampt": datetime.isoformat(datetime.now()),
+        "timestamp": ts,
         "duration": t1,
         "MIN_N_SAMPLES": MIN_N_SAMPLES,
         "MIN_SAMPLE_TIME_NS": MIN_SAMPLE_TIME_NS,
@@ -328,9 +330,14 @@ def main():
         "liboqs_version": oqs.oqs_python_version(),
         "pycryptodome_version": Crypto.__version__,
     }
-    filename = datetime.now().isoformat() + ".zst"
-    df.to_pickle(Path(__file__).resolve().parent / "data" / filename, compression="zstd")
-    print(f"\nDataFrame generated in {t1 / 60 / 60:.0f}h {(t1 / 60) % 60:.0f}m {t1 % 60}s")
+    filename = f"{ts}.zst"
+    dir = Path(__file__).resolve().parent / "data"
+    df.to_pickle(dir / filename, compression="zstd")
+    print(f"\nDataFrame generated in {t1 // 60:.0f}m {t1 % 60:.0f}s")
+    latest_symlink = dir / "latest.zst"
+    if latest_symlink.exists():
+        latest_symlink.unlink()
+    symlink(filename, dir / "latest.zst")
 
 
 if __name__ == "__main__":
