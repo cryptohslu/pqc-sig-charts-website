@@ -21,9 +21,7 @@ app = Dash(
     url_base_pathname=server.config["APPLICATION_ROOT"],
 )
 
-app.layout = create_appshell(
-    dash.page_registry.values(), server.config["APPLICATION_ROOT"]
-)
+app.layout = create_appshell(dash.page_registry.values(), server.config["APPLICATION_ROOT"])
 
 if __name__ == "__main__":
-    app.run_server(debug=True)
+    app.run(debug=True)
