@@ -11,7 +11,6 @@ def create_appshell(data, url_base_pathname):
         forceColorScheme="dark",
         children=[
             dcc.Store(id="color-scheme-storage", storage_type="local"),
-            dcc.Store(id="alert-instructions-dismissed", storage_type="local"),
             dmc.NotificationProvider(),
             dmc.AppShell(
                 [

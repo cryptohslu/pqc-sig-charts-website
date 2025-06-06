@@ -172,11 +172,6 @@ def create_alg_filters():
                     sizes_filter(),
                     dmc.Space(h="xl"),
                     performance_filters(),
-                    dmc.Button(
-                        "How-To",
-                        id="button-instructions",
-                        leftSection=DashIconify(icon="material-symbols:docs-rounded"),
-                    ),
                     dmc.Space(h="xs"),
                     dmc.Button(
                         "Reset All",
@@ -232,13 +227,3 @@ def reset_filters(n_clicks, algs):
         [0, 3000],
         len(algs) * [False],
     )
-
-
-@callback(
-    Output("alert-instructions", "hide"),
-    Input("button-instructions", "n_clicks"),
-    State("alert-instructions", "hide"),
-    prevent_initial_call=True,
-)
-def alert(n_clicks, hide):
-    return not hide

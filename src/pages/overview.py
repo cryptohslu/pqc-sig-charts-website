@@ -7,7 +7,6 @@ from dash import ALL, Input, Output, State, callback, dcc, html, no_update
 
 from components.dataset import FEATURES
 from components.dataset import data as df
-from components.instructions import generate_instructions_alert
 
 df = df.reset_index()
 
@@ -100,7 +99,6 @@ dash.register_page(
 )
 
 layout = [
-    generate_instructions_alert(),
     dmc.SimpleGrid(
         id="content",
         type="container",
