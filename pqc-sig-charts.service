@@ -1,0 +1,15 @@
+[Unit]
+Description=PQC Digital Signatures website visualization
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+WorkingDirectory=/home/pqc/pqc-sig-charts-website
+ExecStart=/home/pqc/pqc-sig-charts-website/run.sh
+Restart=always
+RestartSec=10
+User=pqc
+Group=pqc
+
+[Install]
+WantedBy=multi-user.target
