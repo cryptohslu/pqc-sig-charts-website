@@ -84,7 +84,7 @@ def sizes_filter():
                         id="signature-slider",
                         min=64,
                         max=76_298,
-                        value=[64, 76_298],
+                        value=(64, 76_298),
                         updatemode="drag",
                         label=None,
                         marks=[
@@ -112,7 +112,7 @@ def performance_filters():
                         id="keypair-slider",
                         min=0,
                         max=2_600_000,
-                        value=[0, 2_600_000],
+                        value=(0, 2_600_000),
                         updatemode="drag",
                         label=None,
                         marks=[
@@ -130,7 +130,7 @@ def performance_filters():
                         id="sign-slider",
                         min=0,
                         max=350_000,
-                        value=[0, 350_000],
+                        value=(0, 350_000),
                         updatemode="drag",
                         label=None,
                         marks=[
@@ -147,7 +147,7 @@ def performance_filters():
                         id="verify-slider",
                         min=0,
                         max=3000,
-                        value=[0, 3000],
+                        value=(0, 3000),
                         updatemode="drag",
                         label=None,
                         marks=[
