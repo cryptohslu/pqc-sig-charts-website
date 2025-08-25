@@ -1,0 +1,15 @@
+[Unit]
+Description=Debounce restarts for PQC Digital Signatures website
+# Avoid rate-limit failures when rsync triggers many events quickly
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+# Schedule a single delayed restart 30s from *now*; every new trigger resets it.
+ExecStart=/usr/bin/systemd-run \
+    --quiet \
+    --unit=pqc-sig-charts-restart-delayed \
+    --replace \
+    --on-active=30s \
+    --property=Type=oneshot \
+    /bin/systemctl restart pqc-sig-charts.service
