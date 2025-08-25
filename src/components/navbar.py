@@ -121,6 +121,8 @@ def performance_filters():
                             # {"value": 10_000, "label": "100ms"},
                             {"value": 500_000, "label": "500ms"},
                             {"value": 1_000_000, "label": "1s"},
+                            {"value": 1_500_000, "label": "1.5s"},
+                            {"value": 2_000_000, "label": "2s"},
                             {"value": 2_600_000, "label": "2.6s"},
                         ],
                         mb=10,
