@@ -45,7 +45,7 @@ def create_header(data, url_base_pathname):
                                         n_clicks=0,
                                     ),
                                     dmc.Anchor(
-                                        ["PQC Signatures (44 / 44)"],
+                                        ["PQC Signatures (76 / 76)"],
                                         id="website-title",
                                         size="xl",
                                         href=url_base_pathname,
@@ -62,29 +62,32 @@ def create_header(data, url_base_pathname):
                                 h=31,
                                 gap="xl",
                                 children=[
-                                    dcc.Link(
+                                    dmc.Anchor(
                                         dmc.Button(
                                             "Overview",
                                             variant="subtle",
                                             id="overview-button",
                                         ),
                                         href="/sig-charts/",
+                                        visibleFrom="sm",
                                     ),
-                                    dcc.Link(
+                                    dmc.Anchor(
                                         dmc.Button(
                                             "Compare",
                                             variant="subtle",
                                             id="compare-button",
                                         ),
                                         href="/sig-charts/compare/",
+                                        visibleFrom="sm",
                                     ),
-                                    html.A(
+                                    dmc.Anchor(
                                         dmc.Button(
                                             "Applied Cyber Security Research Lab",
                                             variant="subtle",
                                         ),
-                                        href="https://www.hslu.ch/acs",
+                                        href="https://www.hslu.ch/en/acs/",
                                         target="_blank",
+                                        visibleFrom="md",
                                     ),
                                     theme_toggle,
                                 ],
