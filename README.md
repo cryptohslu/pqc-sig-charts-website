@@ -7,9 +7,9 @@ Source code of the Plotly/Dash visualization website for PQC signature algorithm
 ## Quick start
 
 ```console
-git clone https://github.com/cryptohslu/pqc-sig-charts-website.git
-cd pqc-sig-charts-website
-./run.sh
+$ git clone https://github.com/cryptohslu/pqc-sig-charts-website.git
+$ cd pqc-sig-charts-website
+$ ./run.sh
 ```
 
 ## Systemd units
@@ -23,6 +23,7 @@ cd pqc-sig-charts-website
 To enable them, copy both files to `/etc/systemd/system/` and run
 
 ```console
-systemctl enable --now pqc-sig-charts.service
-systemctl enable --now pqc-sig-charts-restart.path
+# systemctl enable --now pqc-sig-charts.service
+# systemctl enable --now pqc-sig-charts-debounce.path
+# systemctl enable --now pqc-sig-charts-restart.timer
 ```
