@@ -14,9 +14,11 @@ cd pqc-sig-charts-website
 
 ## Systemd units
 
-- `pqc-sig-charts.service`: Unit that will start (and keep restarting if it failed) the Gunicorn server running the app
-- `pqc-sig-charts-restart.path`: Monitor the directory with the webapp for changes
-- `pqc-sig-charts-restart.service`: Triggers a one-time restart of the webapp service
+- `pqc-sig-charts.service`: Unit that starts the Gunicorn server running the webapp
+- `pqc-sig-charts-restart.service`: Auxiliary unit to restart the main service
+- `pqc-sig-charts-restart.timer`: Timer that waits 30 seconds to trigger the auxiliary restart unit
+- `pqc-sig-charts-debounce.path`: Unit that monitors the webapp directory for changes
+- `pqc-sig-charts-debounce.service`: Unit that resets the restart timer back to 30 seconds
 
 To enable them, copy both files to `/etc/systemd/system/` and run
 

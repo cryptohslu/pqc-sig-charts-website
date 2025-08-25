@@ -1,0 +1,6 @@
+[Unit]
+Description=Restart PQC website (delayed trigger target)
+
+[Service]
+Type=oneshot
+ExecStart=/bin/systemctl restart pqc-sig-charts.service

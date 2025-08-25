@@ -1,0 +1,11 @@
+[Unit]
+Description=Timer for delayed restart of PQC website
+
+[Timer]
+OnActiveSec=30s
+AccuracySec=1s
+Unit=pqc-sig-charts-restart.service
+Persistent=false
+
+[Install]
+WantedBy=timers.target
