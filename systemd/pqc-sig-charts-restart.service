@@ -4,5 +4,5 @@ StartLimitBurst=0
 
 [Service]
 Type=oneshot
-ExecStart=/bin/sleep 30
+ExecStartPre=/bin/sleep 30
 ExecStart=/bin/systemctl restart pqc-sig-charts.service
