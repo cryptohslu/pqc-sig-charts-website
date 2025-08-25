@@ -25,5 +25,4 @@ To enable them, copy both files to `/etc/systemd/system/` and run
 ```console
 # systemctl enable --now pqc-sig-charts.service
 # systemctl enable --now pqc-sig-charts-debounce.path
-# systemctl enable --now pqc-sig-charts-restart.timer
 ```
