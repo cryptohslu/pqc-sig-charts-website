@@ -137,6 +137,8 @@ layout = [
     ],
 )
 def update_filtered_algorithms(nist_levels, pubkey, privkey, sig, keypair, sign, verify):
+    pubkey = [10 ** pubkey[0], 10 ** pubkey[1]]
+    privkey = [10 ** privkey[0], 10 ** privkey[1]]
     all_algs = df["Algorithm"].to_list()
     try:
         tmp = pd.concat([df[df["NIST"] == int(l)] for l in nist_levels])
