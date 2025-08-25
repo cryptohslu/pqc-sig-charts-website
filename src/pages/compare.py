@@ -115,7 +115,7 @@ def generate_radar(algs):
         Input("url", "pathname"),
     ],
     State("n-clicked-algs", "data"),
-    prevent_initial_call=True,
+    prevent_initial_call="initial_duplicate",
 )
 def update_comparison(clicked_algs, url, n_clicked):
     if url != "/sig-charts/compare/":
