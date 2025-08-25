@@ -2,7 +2,9 @@
 Description=Watch PQC Digital Singature webapp dir and debounce restarts
 
 [Path]
-PathModified=/home/pqc/pqc-sig-charts-website
+PathModified=/home/pqc/pqc-sig-charts-website/run.sh
+PathModified=/home/pqc/pqc-sig-charts-website/src
+PathModified=/home/pqc/pqc-sig-charts-website/data
 Unit=pqc-sig-charts-debounce.service
 
 [Install]
