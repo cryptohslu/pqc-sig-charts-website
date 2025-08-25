@@ -16,3 +16,10 @@ cd pqc-sig-charts-website
 
 - `pqc-sig-charts.service`: Unit that will start (and keep restarting if it failed) the Gunicorn server running the app
 - `pqc-sig-charts.path`: Monitor the directory with the webapp for changes and restart the service if needed
+
+To enable them, copy both files to `/etc/systemd/system/` and run
+
+```console
+systemctl enable --now pqc-sig-charts.service
+systemctl enable --now pqc-sig-charts.path
+```
