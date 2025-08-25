@@ -231,7 +231,7 @@ def benchmark_traditional_sigs(debug=False):
             "Verify (μs)": verify_times,
         }
     )
-    df.set_index(["NIST", "Algorithm"], inplace=True)
+    df.set_index("Algorithm", inplace=True)
     df.sort_index(inplace=True)
     print(" ✓")
     return df
@@ -303,7 +303,7 @@ def benchmark_pqc_sigs(debug=False):
             "Verify (μs)": verify_times,
         }
     )
-    df.set_index(["NIST", "Algorithm"], inplace=True)
+    df.set_index("Algorithm", inplace=True)
     df.sort_index(inplace=True)
     print(" ✓")
     return df
