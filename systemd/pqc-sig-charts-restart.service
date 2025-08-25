@@ -3,4 +3,5 @@ Description=Restart PQC Digital Signatures website visualization
 
 [Service]
 Type=oneshot
+ExecStart=/bin/sleep 30
 ExecStart=/bin/systemctl restart pqc-sig-charts.service
