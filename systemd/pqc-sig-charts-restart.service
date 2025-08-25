@@ -1,5 +1,6 @@
 [Unit]
 Description=Restart PQC Digital Signatures website visualization
+StartLimitBurst=0
 
 [Service]
 Type=oneshot

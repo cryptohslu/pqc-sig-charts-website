@@ -1,5 +1,6 @@
 [Unit]
 Description=Watch /home/pqc/pqc-sig-charts-website and restart service on changes
+StartLimitBurst=0
 
 [Path]
 PathModified=/home/pqc/pqc-sig-charts-website
