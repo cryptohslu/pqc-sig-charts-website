@@ -2,7 +2,7 @@
 Description=Timer for delayed restart of PQC website
 
 [Timer]
-OnActiveSec=30s
+OnActiveSec=10s
 AccuracySec=1s
 Unit=pqc-sig-charts-restart.service
 Persistent=false
