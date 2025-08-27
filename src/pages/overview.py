@@ -94,7 +94,7 @@ def generate_radar_chart(alg_name):
 dash.register_page(
     __name__,
     "/",
-    title="PQC DS",
+    title="PQC Digital Signatures",
     description="Comparative of PQC sigs available in OQS liboqs library.",
 )
 
@@ -186,7 +186,7 @@ def update_shown_charts(algs, n_algs, url):
 
     return (
         charts,
-        f"PQC Signatures ({n_algs["value"]} / {n_algs_total})",
+        f"PQC Digital Signatures ({n_algs["value"]} / {n_algs_total})",
     )
 
 
