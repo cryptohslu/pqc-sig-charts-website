@@ -29,3 +29,27 @@ To enable them, copy both files to `/etc/systemd/system/` and run
 # systemctl enable --now pqc-sig-charts.service
 # systemctl enable --now pqc-sig-charts-debounce.path
 ```
+
+## Citation
+
+If this visualization was useful to you in your research or project, please cite us.
+
+### BibTeX
+
+```bibtex
+@software{Mendez_Veiga_PQC_Digital_Signatures_2025,
+    author = {Mendez Veiga, Iyan},
+    doi = {10.5281/zenodo.16981057},
+    month = aug,
+    title = {{PQC Digital Signatures Visualization}},
+    url = {https://github.com/cryptohslu/pqc-sig-charts-website},
+    version = {2025.08.28},
+    year = {2025}
+}
+```
+
+### APA
+
+```
+Mendez Veiga, I. (2025). PQC Digital Signatures Visualization (Version 2025.08.28) [Computer software]. https://doi.org/10.5281/zenodo.16981057
+```
