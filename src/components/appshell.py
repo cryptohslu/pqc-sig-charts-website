@@ -48,7 +48,7 @@ def toggle_navbar(n_clicks, url, navbar):
         }
     elif n_clicks % 2 == 0:
         navbar["collapsed"] = {
-            "mobile": True,
+            "mobile": False,
             "desktop": False,
         }
     else:
