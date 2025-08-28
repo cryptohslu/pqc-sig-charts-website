@@ -1,5 +1,8 @@
 # pqc-sig-charts-website
 
+[![DOI](https://zenodo.org/badge/926834459.svg)](https://doi.org/10.5281/zenodo.16981056)
+[![Deploy webapp](https://github.com/cryptohslu/pqc-sig-charts-website/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/cryptohslu/pqc-sig-charts-website/actions/workflows/deploy.yml)
+
 ![](webapp.png)
 
 Source code of the Plotly/Dash visualization website for PQC signature algorithms.
