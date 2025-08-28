@@ -1,9 +1,7 @@
-from pathlib import Path
-
 import dash
 import dash_mantine_components as dmc
 import pandas as pd
-from dash import ALL, Input, Output, State, callback, dcc, html, no_update
+from dash import ALL, Input, Output, State, callback, no_update
 
 from components.dataset import FEATURES
 from components.dataset import data as df

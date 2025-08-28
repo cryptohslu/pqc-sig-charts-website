@@ -1,6 +1,6 @@
 import dash_mantine_components as dmc
 import numpy as np
-from dash import ALL, Input, Output, State, callback, html, no_update
+from dash import ALL, Input, Output, State, callback, html
 from dash_iconify import DashIconify
 
 
