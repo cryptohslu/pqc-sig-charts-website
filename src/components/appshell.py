@@ -38,7 +38,6 @@ def create_appshell(data, url_base_pathname):
         Input("url", "pathname"),
     ],
     State("appshell", "navbar"),
-    prevent_initial_call=True,
 )
 def toggle_navbar(n_clicks, url, navbar):
     if url == "/sig-charts/compare/":
@@ -46,14 +45,15 @@ def toggle_navbar(n_clicks, url, navbar):
             "mobile": True,
             "desktop": True,
         }
-    elif n_clicks % 2 == 0:
-        navbar["collapsed"] = {
-            "mobile": False,
-            "desktop": False,
-        }
-    else:
-        navbar["collapsed"] = {
-            "mobile": True,
-            "desktop": True,
-        }
+    elif n_clicks is not None and n_clicks > 0:
+        if n_clicks % 2 == 0:
+            navbar["collapsed"] = {
+                "mobile": False,
+                "desktop": False,
+            }
+        else:
+            navbar["collapsed"] = {
+                "mobile": True,
+                "desktop": True,
+            }
     return navbar
