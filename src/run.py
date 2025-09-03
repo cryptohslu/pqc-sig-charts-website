@@ -16,6 +16,7 @@ csp = (
     .default_src("'self'")
     .script_src("'self'", "'unsafe-inline'")
     .style_src("'self'", "'unsafe-inline'")
+    .connect_src("'self'", "https://api.simplesvg.com", "https://api.iconify.design", "https://api.unisvg.com")
     .object_src("'none'")
 )
 
