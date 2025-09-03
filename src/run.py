@@ -18,7 +18,11 @@ csp = (
     .style_src("'self'", "'unsafe-inline'")
     .object_src("'none'")
 )
-secure_headers = secure.Secure(csp=csp)
+
+# X-Frame-Options
+xfo = secure.XFrameOptions().deny()
+
+secure_headers = secure.Secure(csp=csp, xfo=xfo)
 
 
 @server.after_request
