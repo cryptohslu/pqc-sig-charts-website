@@ -1,7 +1,7 @@
 import dash
+import secure
 from dash import Dash
 from flask import Flask, Response
-from secure import Secure
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from components.appshell import create_appshell
@@ -9,7 +9,16 @@ from components.appshell import create_appshell
 server = Flask(__name__)
 server.wsgi_app = ProxyFix(server.wsgi_app, x_for=1, x_proto=1, x_host=1, x_prefix=1)
 server.config["APPLICATION_ROOT"] = "/sig-charts/"
-secure_headers = Secure.with_default_headers()
+
+# Custom CSP policy
+csp = (
+    secure.ContentSecurityPolicy()
+    .default_src("'self'")
+    .script_src("'self'", "'unsafe-inline'")
+    .style_src("'self'", "'unsafe-inline'")
+    .object_src("'none'")
+)
+secure_headers = secure.Secure(csp=csp)
 
 
 @server.after_request
