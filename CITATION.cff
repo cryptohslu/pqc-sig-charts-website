@@ -5,7 +5,7 @@ authors:
   given-names: "Iyan"
   orcid: "https://orcid.org/0009-0004-8249-4661"
 title: "PQC Digital Signatures Visualization"
-version: 2025.08.28
-doi: 10.5281/zenodo.16981057
-date-released: 2025-08-28
+version: 2026.01.14
+doi: 10.5281/zenodo.18241109
+date-released: 2026-01-14
 url: "https://github.com/cryptohslu/pqc-sig-charts-website"

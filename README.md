@@ -1,6 +1,6 @@
 # pqc-sig-charts-website
 
-[![DOI](https://zenodo.org/badge/926834459.svg)](https://doi.org/10.5281/zenodo.16981056)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18241109.svg)](https://doi.org/10.5281/zenodo.18241109)
 [![Deploy webapp](https://github.com/cryptohslu/pqc-sig-charts-website/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/cryptohslu/pqc-sig-charts-website/actions/workflows/deploy.yml)
 
 [pqc-sig-charts.webm](https://github.com/user-attachments/assets/37612a68-93ec-4ed6-a761-45245de1e9d3)
@@ -37,19 +37,19 @@ If this visualization was useful to you in your research or project, please cite
 ### BibTeX
 
 ```bibtex
-@software{Mendez_Veiga_PQC_Digital_Signatures_2025,
+@software{Mendez_Veiga_PQC_Digital_Signatures,
     author = {Mendez Veiga, Iyan},
-    doi = {10.5281/zenodo.16981057},
-    month = aug,
+    doi = {10.5281/zenodo.18241109},
+    month = jan,
     title = {{PQC Digital Signatures Visualization}},
     url = {https://github.com/cryptohslu/pqc-sig-charts-website},
-    version = {2025.08.28},
-    year = {2025}
+    version = {2026.01.14},
+    year = {2026}
 }
 ```
 
 ### APA
 
 ```
-Mendez Veiga, I. (2025). PQC Digital Signatures Visualization (Version 2025.08.28) [Computer software]. https://doi.org/10.5281/zenodo.16981057
+Mendez Veiga, I. (2026). PQC Digital Signatures Visualization (Version 2026.01.14) [Computer software]. https://doi.org/10.5281/zenodo.18241109
 ```
