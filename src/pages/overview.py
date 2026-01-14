@@ -15,12 +15,18 @@ clicked_algs = {alg: False for alg in df["Algorithm"].to_list()}
 selected = 0
 
 
+def soft_break_on_underscore(s: str) -> str:
+    # U+200B = zero-width space (soft wrap opportunity)
+    return s.replace("_", "_\u200b")
+
+
 def generate_radar_chart(alg_name):
     data = []
     raw_data = df[df["Algorithm"] == alg_name][FEATURES].squeeze(0)
     for i, val in enumerate(raw_data):
         data.append({"feature": FEATURES[i].split("(")[0].strip(), "value": val})
     return dmc.Box(
+        style={"width": "250px"},
         children=[
             dmc.Stack(
                 [
@@ -33,13 +39,19 @@ def generate_radar_chart(alg_name):
                         size="xs",
                         variant="filled",
                         label=dmc.Text(
-                            alg_name,
+                            soft_break_on_underscore(alg_name),
                             ta="center",
                             style={
                                 "fontSize": "9pt",
-                                "whiteSpace": "nowrap",
+                                "width": "200px",
+                                "whiteSpace": "normal",
+                                "overflowWrap": "anywhere",
+                                "wordBreak": "break-word",
+                                "lineHeight": "1.1",
+                                "display": "-webkit-box",
+                                "WebkitBoxOrient": "vertical",
+                                "WebkitLineClamp": 2,
                                 "overflow": "hidden",
-                                "textOverflow": "ellipsis",
                             },
                         ),
                         persistence=True,
@@ -85,7 +97,7 @@ def generate_radar_chart(alg_name):
                 p=0,
                 align="center",
             ),
-        ]
+        ],
     )
 
 
