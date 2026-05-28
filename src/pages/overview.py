@@ -151,9 +151,9 @@ def update_filtered_algorithms(nist_levels, pubkey, privkey, sig, keypair, sign,
     privkey = [10 ** privkey[0], 10 ** privkey[1]]
     all_algs = df["Algorithm"].to_list()
     try:
-        tmp = pd.concat([df[df["NIST"] == int(l)] for l in nist_levels])
+        tmp = pd.concat([df[df["NIST Security Level"] == int(l)] for l in nist_levels])
     except ValueError:
-        return {alg: False for alg in all_algs}
+        return {alg: False for alg in all_algs}, {"value": 0}
 
     tmp = tmp[(tmp["Pubkey (bytes)"] >= int(pubkey[0])) & (tmp["Pubkey (bytes)"] <= int(pubkey[1]))]
     tmp = tmp[(tmp["Privkey (bytes)"] >= int(privkey[0])) & (tmp["Privkey (bytes)"] <= int(privkey[1]))]
@@ -249,13 +249,15 @@ def update_compare_selection(clicked):
     ],
 )
 def disable_checkboxes(clicked, checked, selected):
-    selected = selected["value"]
-    if clicked["value"] < 5:
-        return selected * [False]
+    if clicked is None or selected is None:
+        return len(checked) * [False]
 
-    disabled_list = selected * [False]
-    for i, id_ in enumerate(checked):
-        if not id_:
+    if clicked["value"] < 5:
+        return len(checked) * [False]
+
+    disabled_list = len(checked) * [False]
+    for i, is_checked in enumerate(checked):
+        if not is_checked:
             disabled_list[i] = True
 
     return disabled_list
