@@ -19,7 +19,7 @@ df = df.reset_index()
 df = df[
     [
         "Algorithm",
-        "NIST",
+        "NIST Security Level",
         "Pubkey (bytes)",
         "Privkey (bytes)",
         "Signature (bytes)",
@@ -28,7 +28,6 @@ df = df[
         "Verify (μs)",
     ]
 ]
-df.rename(columns={"NIST": "NIST Security Level"}, inplace=True)
 
 layout = [
     dmc.Stack(

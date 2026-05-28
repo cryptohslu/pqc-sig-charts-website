@@ -14,6 +14,7 @@ def nist_security_level_filter():
                         [
                             dmc.ChipGroup(
                                 [
+                                    dmc.Chip("0", value="0"),
                                     dmc.Chip("1", value="1"),
                                     dmc.Chip("2", value="2"),
                                     dmc.Chip("3", value="3"),
@@ -21,7 +22,7 @@ def nist_security_level_filter():
                                     dmc.Chip("5", value="5"),
                                 ],
                                 multiple=True,
-                                value=["1", "2", "3", "4", "5"],
+                                value=["0", "1", "2", "3", "4", "5"],
                                 id="nist-security-levels-checkbox",
                             ),
                         ]
@@ -221,7 +222,7 @@ def create_navbar(data):
 )
 def reset_filters(n_clicks, algs):
     return (
-        ("1", "2", "3", "4", "5"),
+        ("0", "1", "2", "3", "4", "5"),
         (np.log10(32), np.log10(3_000_000)),
         (np.log10(24), np.log10(2_500_000)),
         (0, 75_000),

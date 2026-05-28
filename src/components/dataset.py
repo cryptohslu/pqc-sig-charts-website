@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pandas as pd
 
-DATASET = "dataset_v5.zst"
+DATASET = "dataset_v6_x86_64_pc.zst"
 
 FEATURES = [
     "Pubkey (bytes)",
