@@ -192,19 +192,18 @@ def update_shown_charts(algs, n_algs, url):
     [
         State({"type": "checkbox-alg", "index": ALL}, "id"),
         State("url", "pathname"),
+        State("clicked-algs", "data"),
     ],
 )
-def update_clicked_algorithms(values, ids, url):
+def update_clicked_algorithms(values, ids, url, prev_clicked):
     if url == "/sig-charts/compare/":
         return no_update
 
-    clicked_algs = {}
+    # Preserve state of filtered-out algorithms; only update what is currently visible.
+    clicked_algs = dict(prev_clicked) if prev_clicked else {}
     for i, id_ in enumerate(ids):
         alg_name = "-".join(id_["index"].split("-")[1:])
-        if values[i]:
-            clicked_algs[alg_name] = True
-        else:
-            clicked_algs[alg_name] = False
+        clicked_algs[alg_name] = bool(values[i])
     return clicked_algs
 
 
