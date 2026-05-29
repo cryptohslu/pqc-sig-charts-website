@@ -117,6 +117,7 @@ layout = []
         Output("n-selected-algs", "data"),
     ],
     [
+        Input("alg-search", "value"),
         Input("nist-security-levels-checkbox", "value"),
         Input("pubkey-slider", "value"),
         Input("privkey-slider", "value"),
@@ -126,7 +127,7 @@ layout = []
         Input("verify-slider", "value"),
     ],
 )
-def update_filtered_algorithms(nist_levels, pubkey, privkey, sig, keypair, sign, verify):
+def update_filtered_algorithms(search, nist_levels, pubkey, privkey, sig, keypair, sign, verify):
     pubkey = [10 ** pubkey[0], 10 ** pubkey[1]]
     privkey = [10 ** privkey[0], 10 ** privkey[1]]
     keypair = [10 ** keypair[0], 10 ** keypair[1]]
@@ -138,6 +139,8 @@ def update_filtered_algorithms(nist_levels, pubkey, privkey, sig, keypair, sign,
     except ValueError:
         return {alg: False for alg in all_algs}, {"value": 0}
 
+    if search:
+        tmp = tmp[tmp["Algorithm"].str.contains(search, case=False, na=False)]
     tmp = tmp[(tmp["Pubkey (bytes)"] >= int(pubkey[0])) & (tmp["Pubkey (bytes)"] <= int(pubkey[1]))]
     tmp = tmp[(tmp["Privkey (bytes)"] >= int(privkey[0])) & (tmp["Privkey (bytes)"] <= int(privkey[1]))]
     tmp = tmp[(tmp["Signature (bytes)"] >= int(sig[0])) & (tmp["Signature (bytes)"] <= int(sig[1]))]

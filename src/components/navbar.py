@@ -181,6 +181,13 @@ def create_alg_filters():
                 size="350px",
                 px="xs",
                 children=[
+                    dmc.TextInput(
+                        id="alg-search",
+                        placeholder="Search algorithms...",
+                        leftSection=DashIconify(icon="tabler:search"),
+                        debounce=300,
+                    ),
+                    dmc.Space(h="sm"),
                     nist_security_level_filter(),
                     dmc.Space(h="sm"),
                     sizes_filter(),
@@ -217,6 +224,7 @@ def create_navbar(data):
 
 @callback(
     [
+        Output("alg-search", "value"),
         Output("nist-security-levels-checkbox", "value"),
         Output("pubkey-slider", "value"),
         Output("privkey-slider", "value"),
@@ -232,6 +240,7 @@ def create_navbar(data):
 )
 def reset_filters(n_clicks, algs):
     return (
+        "",
         ("0", "1", "2", "3", "4", "5"),
         (np.log10(32), np.log10(3_000_000)),
         (np.log10(24), np.log10(2_500_000)),
