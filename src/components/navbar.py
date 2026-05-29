@@ -9,17 +9,17 @@ def nist_security_level_filter():
         [
             dmc.Stack(
                 [
-                    dmc.Title("Nist Security Level", order=4),
+                    dmc.Title("NIST Security Level", order=4),
                     dmc.Group(
                         [
                             dmc.ChipGroup(
                                 [
-                                    dmc.Chip("0", value="0"),
-                                    dmc.Chip("1", value="1"),
-                                    dmc.Chip("2", value="2"),
-                                    dmc.Chip("3", value="3"),
-                                    dmc.Chip("4", value="4"),
-                                    dmc.Chip("5", value="5"),
+                                    dmc.Chip("0", value="0", size="xs"),
+                                    dmc.Chip("1", value="1", size="xs"),
+                                    dmc.Chip("2", value="2", size="xs"),
+                                    dmc.Chip("3", value="3", size="xs"),
+                                    dmc.Chip("4", value="4", size="xs"),
+                                    dmc.Chip("5", value="5", size="xs"),
                                 ],
                                 multiple=True,
                                 value=["0", "1", "2", "3", "4", "5"],
@@ -58,7 +58,7 @@ def sizes_filter():
                             {"value": np.log10(100_000), "label": "100K"},
                             {"value": np.log10(3_000_000), "label": "3M"},
                         ],
-                        mb=10,
+                        mb=20,
                     ),
                     dmc.Title("Private key (bytes)", order=5),
                     dmc.RangeSlider(
@@ -78,7 +78,7 @@ def sizes_filter():
                             {"value": np.log10(100_000), "label": "100K"},
                             {"value": np.log10(2_500_000), "label": "2.5M"},
                         ],
-                        mb=10,
+                        mb=20,
                     ),
                     dmc.Title("Signature size (bytes)", order=5),
                     dmc.RangeSlider(
@@ -95,8 +95,10 @@ def sizes_filter():
                             {"value": 60_000, "label": "50K"},
                             {"value": 75_000, "label": "75K"},
                         ],
+                        mb=20,
                     ),
-                ]
+                ],
+                gap="xs",
             )
         ]
     )
@@ -126,7 +128,7 @@ def performance_filters():
                             {"value": np.log10(60 * 60 * 1e6), "label": "1h"},
                             {"value": np.log10(10 * 60 * 60 * 1e6), "label": "10h"},
                         ],
-                        mb=10,
+                        mb=20,
                     ),
                     dmc.Title("Signature creation", order=5),
                     dmc.RangeSlider(
@@ -146,7 +148,7 @@ def performance_filters():
                             {"value": np.log10(60 * 60 * 1e6), "label": "1h"},
                             {"value": np.log10(10 * 60 * 60 * 1e6), "label": "10h"},
                         ],
-                        mb=10,
+                        mb=20,
                     ),
                     dmc.Title("Signature verification", order=5),
                     dmc.RangeSlider(
@@ -165,7 +167,8 @@ def performance_filters():
                         ],
                         mb=40,
                     ),
-                ]
+                ],
+                gap="xs",
             )
         ]
     )
@@ -175,13 +178,13 @@ def create_alg_filters():
     return html.Div(
         [
             dmc.Container(
-                size="405px",
+                size="350px",
                 px="xs",
                 children=[
                     nist_security_level_filter(),
-                    dmc.Space(h="xl"),
+                    dmc.Space(h="sm"),
                     sizes_filter(),
-                    dmc.Space(h="xl"),
+                    dmc.Space(h="sm"),
                     performance_filters(),
                     dmc.Space(h="xs"),
                     dmc.Button(
@@ -204,7 +207,7 @@ def create_navbar(data):
                     create_alg_filters(),
                 ],
                 type="scroll",
-                w=410,
+                w=355,
                 h=1000,
             )
         ],
