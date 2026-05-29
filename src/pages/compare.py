@@ -1,7 +1,7 @@
 import dash
 import dash_mantine_components as dmc
 import pandas as pd
-from dash import Input, Output, State, callback, no_update
+from dash import Input, Output, State, callback, clientside_callback, no_update
 
 from components.dataset import ALL_DATA, DEFAULT_DATASET, FEATURES
 
@@ -80,9 +80,10 @@ def generate_radar(algs, df):
         withPolarAngleAxis=True,
         withPolarRadiusAxis=True,
         polarRadiusAxisProps={
-            "angle": 60,
+            "angle": 90,
             "scale": "log",
-            "domain": [1, 10**6],
+            "domain": [1, 10**9],
+            "ticks": [10**i for i in range(9)],
         },
         radarProps={
             "isAnimationActive": True,
@@ -90,6 +91,27 @@ def generate_radar(algs, df):
         withLegend=True,
         series=series,
     )
+
+
+clientside_callback(
+    """
+    function(children) {
+        var sups = {2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', 10: '¹⁰'};
+        function fmt() {
+            document.querySelectorAll('.recharts-polar-radius-axis tspan').forEach(function(el) {
+                var val = parseFloat(el.textContent);
+                if (isNaN(val) || val <= 10) return;
+                var exp = Math.round(Math.log10(val));
+                if (sups[exp]) el.textContent = '10' + sups[exp];
+            });
+        }
+        requestAnimationFrame(fmt);
+        return window.dash_clientside.no_update;
+    }
+    """,
+    Output("content-compare", "className"),
+    Input("content-compare", "children"),
+)
 
 
 @callback(
