@@ -110,7 +110,7 @@ def generate_radar(algs):
 )
 def update_comparison(clicked_algs, url, n_clicked):
     if url != "/sig-charts/compare/":
-        return no_update, no_update
+        return [], no_update
 
     if not clicked_algs or not any(clicked_algs.values()):
         return no_update
