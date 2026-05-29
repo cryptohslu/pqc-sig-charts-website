@@ -129,6 +129,9 @@ layout = []
 def update_filtered_algorithms(nist_levels, pubkey, privkey, sig, keypair, sign, verify):
     pubkey = [10 ** pubkey[0], 10 ** pubkey[1]]
     privkey = [10 ** privkey[0], 10 ** privkey[1]]
+    keypair = [10 ** keypair[0], 10 ** keypair[1]]
+    sign = [10 ** sign[0], 10 ** sign[1]]
+    verify = [10 ** verify[0], 10 ** verify[1]]
     all_algs = df["Algorithm"].to_list()
     try:
         tmp = pd.concat([df[df["NIST Security Level"] == int(l)] for l in nist_levels])
@@ -139,8 +142,8 @@ def update_filtered_algorithms(nist_levels, pubkey, privkey, sig, keypair, sign,
     tmp = tmp[(tmp["Privkey (bytes)"] >= int(privkey[0])) & (tmp["Privkey (bytes)"] <= int(privkey[1]))]
     tmp = tmp[(tmp["Signature (bytes)"] >= int(sig[0])) & (tmp["Signature (bytes)"] <= int(sig[1]))]
     tmp = tmp[(tmp["Keygen (μs)"] >= keypair[0]) & (tmp["Keygen (μs)"] <= keypair[1])]
-    tmp = tmp[(tmp["Sign (μs)"] >= int(sign[0])) & (tmp["Sign (μs)"] <= int(sign[1]))]
-    tmp = tmp[(tmp["Verify (μs)"] >= int(verify[0])) & (tmp["Verify (μs)"] <= int(verify[1]))]
+    tmp = tmp[(tmp["Sign (μs)"] >= sign[0]) & (tmp["Sign (μs)"] <= sign[1])]
+    tmp = tmp[(tmp["Verify (μs)"] >= verify[0]) & (tmp["Verify (μs)"] <= verify[1])]
 
     selected = tmp["Algorithm"].to_list()
     selected_algs = {}
