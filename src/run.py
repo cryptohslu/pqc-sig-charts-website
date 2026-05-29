@@ -37,6 +37,7 @@ app = Dash(
     server=server,
     use_pages=True,
     url_base_pathname=server.config["APPLICATION_ROOT"],
+    suppress_callback_exceptions=True,
 )
 
 app.layout = create_appshell(dash.page_registry.values(), server.config["APPLICATION_ROOT"])

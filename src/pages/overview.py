@@ -108,27 +108,7 @@ dash.register_page(
     description="Comparative of PQC sigs available in OQS liboqs library.",
 )
 
-layout = [
-    dmc.SimpleGrid(
-        id="content",
-        type="container",
-        cols={
-            "base": 1,
-            "500px": 2,
-            "750px": 3,
-            "1000px": 4,
-            "1250px": 5,
-            "1500px": 6,
-            "1750px": 7,
-            "2000px": 8,
-            "2250px": 9,
-            "2500px": 10,
-        },
-        spacing=0,
-        verticalSpacing="xs",
-        children=[generate_radar_chart(alg) for alg in df["Algorithm"].to_list()],
-    ),
-]
+layout = []
 
 
 @callback(
@@ -174,25 +154,25 @@ def update_filtered_algorithms(nist_levels, pubkey, privkey, sig, keypair, sign,
 
 @callback(
     [
-        Output("content", "children", allow_duplicate=True),
+        Output("content-overview", "children"),
         Output("website-title", "children", allow_duplicate=True),
     ],
     [
         Input("selected-algs", "data"),
         Input("n-selected-algs", "data"),
+        Input("url", "pathname"),
     ],
-    State("url", "pathname"),
     prevent_initial_call="initial_duplicate",
 )
 def update_shown_charts(algs, n_algs, url):
     if url != "/sig-charts/":
+        return [], no_update
+
+    if algs is None or n_algs is None:
         return no_update
 
     n_algs_total = df.shape[0]
-    charts = []
-    for alg_name in algs:
-        if algs[alg_name]:
-            charts.append(generate_radar_chart(alg_name))
+    charts = [generate_radar_chart(alg_name) for alg_name in algs if algs[alg_name]]
 
     return (
         charts,

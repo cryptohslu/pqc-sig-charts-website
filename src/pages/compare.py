@@ -32,7 +32,7 @@ df = df[
 layout = [
     dmc.Stack(
         [],
-        id="content",
+        id="content-compare",
         align="center",
         justify="flex-start",
         gap=0,
@@ -106,7 +106,7 @@ def generate_radar(algs):
 
 @callback(
     [
-        Output("content", "children", allow_duplicate=True),
+        Output("content-compare", "children"),
         Output("website-title", "children", allow_duplicate=True),
     ],
     [
@@ -114,16 +114,13 @@ def generate_radar(algs):
         Input("url", "pathname"),
     ],
     State("n-clicked-algs", "data"),
-    prevent_initial_call="initial_duplicate",
+    prevent_initial_call=True,
 )
 def update_comparison(clicked_algs, url, n_clicked):
     if url != "/sig-charts/compare/":
-        return no_update
+        return [], no_update
 
-    if n_clicked is None:
-        return no_update
-
-    if n_clicked["value"] < 1:
+    if not clicked_algs or not any(clicked_algs.values()):
         return no_update
 
     return (
