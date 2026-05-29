@@ -3,10 +3,20 @@ import dash_mantine_components as dmc
 import pandas as pd
 from dash import Input, Output, State, callback, no_update
 
-from components.dataset import FEATURES
-from components.dataset import data as df
+from components.dataset import ALL_DATA, DEFAULT_DATASET, FEATURES
 
 COLORS = ["#ff6b6b", "#339af0", "#51cf66", "#fcc419", "#cc5de8"]
+
+_COLUMNS = [
+    "Algorithm",
+    "NIST Security Level",
+    "Pubkey (bytes)",
+    "Privkey (bytes)",
+    "Signature (bytes)",
+    "Keygen (μs)",
+    "Sign (μs)",
+    "Verify (μs)",
+]
 
 dash.register_page(
     __name__,
@@ -15,24 +25,10 @@ dash.register_page(
     description="Comparative of PQC sigs available in OQS liboqs library.",
 )
 
-df = df.reset_index()
-df = df[
-    [
-        "Algorithm",
-        "NIST Security Level",
-        "Pubkey (bytes)",
-        "Privkey (bytes)",
-        "Signature (bytes)",
-        "Keygen (μs)",
-        "Sign (μs)",
-        "Verify (μs)",
-    ]
-]
-
 layout = []
 
 
-def generate_table(algs):
+def generate_table(algs, df):
     data = []
     tmp = pd.concat([df[df["Algorithm"] == alg_name] for alg_name in algs if algs[alg_name]])
     for i, row in tmp.iterrows():
@@ -59,7 +55,7 @@ def generate_table(algs):
     )
 
 
-def generate_radar(algs):
+def generate_radar(algs, df):
     data = []
     tmp = pd.concat([df[df["Algorithm"] == alg_name] for alg_name in algs if algs[alg_name]])
     for feature in FEATURES:
@@ -104,21 +100,23 @@ def generate_radar(algs):
     [
         Input("clicked-algs", "data"),
         Input("url", "pathname"),
+        Input("dataset-selector", "value"),
     ],
     State("n-clicked-algs", "data"),
     prevent_initial_call=True,
 )
-def update_comparison(clicked_algs, url, n_clicked):
+def update_comparison(clicked_algs, url, selected_dataset, n_clicked):
     if url != "/sig-charts/compare/":
         return [], no_update
 
     if not clicked_algs or not any(clicked_algs.values()):
         return no_update
 
+    df = ALL_DATA[selected_dataset or DEFAULT_DATASET][_COLUMNS]
     return (
         [
-            generate_radar(clicked_algs),
-            generate_table(clicked_algs),
+            generate_radar(clicked_algs, df),
+            generate_table(clicked_algs, df),
         ],
         "PQC Signatures",
     )

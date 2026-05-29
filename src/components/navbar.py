@@ -3,6 +3,8 @@ import numpy as np
 from dash import ALL, Input, Output, State, callback, html
 from dash_iconify import DashIconify
 
+from components.dataset import DATASETS, DEFAULT_DATASET
+
 
 def nist_security_level_filter():
     return html.Div(
@@ -193,6 +195,17 @@ def create_alg_filters():
                     sizes_filter(),
                     dmc.Space(h="sm"),
                     performance_filters(),
+                    dmc.Divider(my="xs"),
+                    dmc.Select(
+                        id="dataset-selector",
+                        label="Dataset",
+                        data=[{"value": k, "label": v} for k, v in DATASETS.items()],
+                        value=DEFAULT_DATASET,
+                        allowDeselect=False,
+                        checkIconPosition="right",
+                        leftSectionPointerEvents="none",
+                        leftSection=DashIconify(icon="material-symbols:dataset"),
+                    ),
                     dmc.Space(h="xs"),
                     dmc.Button(
                         "Reset All",
@@ -233,6 +246,7 @@ def create_navbar(data):
         Output("sign-slider", "value"),
         Output("verify-slider", "value"),
         Output({"type": "checkbox-alg", "index": ALL}, "checked"),
+        Output("dataset-selector", "value"),
     ],
     Input("reset-button", "n_clicks"),
     State({"type": "checkbox-alg", "index": ALL}, "checked"),
@@ -249,4 +263,5 @@ def reset_filters(n_clicks, algs):
         (0, np.log10(10 * 60 * 60 * 1e6)),
         (0, 6),
         len(algs) * [False],
+        DEFAULT_DATASET,
     )

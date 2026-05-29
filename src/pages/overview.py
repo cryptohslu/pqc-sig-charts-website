@@ -3,16 +3,7 @@ import dash_mantine_components as dmc
 import pandas as pd
 from dash import ALL, Input, Output, State, callback, no_update
 
-from components.dataset import FEATURES
-from components.dataset import data as df
-
-df = df.reset_index()
-
-selected_algs = {alg: True for alg in df["Algorithm"].to_list()}
-clicked_algs = {alg: False for alg in df["Algorithm"].to_list()}
-
-
-selected = 0
+from components.dataset import ALL_DATA, DEFAULT_DATASET, FEATURES
 
 
 def soft_break_on_underscore(s: str) -> str:
@@ -20,7 +11,7 @@ def soft_break_on_underscore(s: str) -> str:
     return s.replace("_", "_\u200b")
 
 
-def generate_radar_chart(alg_name):
+def generate_radar_chart(alg_name, df):
     data = []
     raw_data = df[df["Algorithm"] == alg_name][FEATURES].squeeze(0)
     for i, val in enumerate(raw_data):
@@ -125,9 +116,11 @@ layout = []
         Input("keypair-slider", "value"),
         Input("sign-slider", "value"),
         Input("verify-slider", "value"),
+        Input("dataset-selector", "value"),
     ],
 )
-def update_filtered_algorithms(search, nist_levels, pubkey, privkey, sig, keypair, sign, verify):
+def update_filtered_algorithms(search, nist_levels, pubkey, privkey, sig, keypair, sign, verify, selected_dataset):
+    df = ALL_DATA[selected_dataset or DEFAULT_DATASET]
     pubkey = [10 ** pubkey[0], 10 ** pubkey[1]]
     privkey = [10 ** privkey[0], 10 ** privkey[1]]
     keypair = [10 ** keypair[0], 10 ** keypair[1]]
@@ -168,17 +161,19 @@ def update_filtered_algorithms(search, nist_levels, pubkey, privkey, sig, keypai
         Input("n-selected-algs", "data"),
         Input("url", "pathname"),
     ],
+    State("dataset-selector", "value"),
     prevent_initial_call="initial_duplicate",
 )
-def update_shown_charts(algs, n_algs, url):
+def update_shown_charts(algs, n_algs, url, selected_dataset):
     if url != "/sig-charts/":
         return [], no_update
 
     if algs is None or n_algs is None:
         return no_update
 
+    df = ALL_DATA[selected_dataset or DEFAULT_DATASET]
     n_algs_total = df.shape[0]
-    charts = [generate_radar_chart(alg_name) for alg_name in algs if algs[alg_name]]
+    charts = [generate_radar_chart(alg_name, df) for alg_name in algs if algs[alg_name]]
 
     return (
         charts,

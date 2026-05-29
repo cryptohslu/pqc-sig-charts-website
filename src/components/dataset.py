@@ -2,7 +2,15 @@ from pathlib import Path
 
 import pandas as pd
 
-DATASET = "dataset_v6_x86_64_pc.zst"
+DATASETS = {
+    "dataset_v6_aarch64_c8g.large.zst": "AWS C8g (AArch64 Neoverse V2)",
+    "dataset_v6_x86_64_c8a.large.zst": "AWS C8a (x86-64 AMD EPYC 9R45)",
+    "dataset_v6_x86_64_c8i.large.zst": "AWS C8i (x86-64 Intel Xeon 6975P-C)",
+    "dataset_v6_x86_64_laptop.zst": "Laptop (x86-64 Intel Core i7-1185G7)",
+    "dataset_v6_x86_64_pc.zst": "PC (x86-64 AMD Ryzen 9 7900X3D)",
+}
+
+DEFAULT_DATASET = "dataset_v6_x86_64_c8i.large.zst"
 
 FEATURES = [
     "Pubkey (bytes)",
@@ -13,4 +21,6 @@ FEATURES = [
     "Verify (μs)",
 ]
 
-data = pd.read_pickle(Path(__file__).resolve().parent.parent.parent / "data" / DATASET)
+_DATA_DIR = Path(__file__).resolve().parent.parent.parent / "data"
+
+ALL_DATA = {filename: pd.read_pickle(_DATA_DIR / filename).reset_index() for filename in DATASETS}
