@@ -82,4 +82,11 @@ def toggle_navbar(n_clicks, url, navbar):
                 "mobile": True,
                 "desktop": True,
             }
+    else:
+        # Navigating back from compare with no filter button interaction:
+        # restore the default state (visible on desktop, hidden on mobile).
+        navbar["collapsed"] = {
+            "mobile": True,
+            "desktop": False,
+        }
     return navbar
