@@ -92,7 +92,7 @@
             element: '#content-overview',
             title: 'Select Algorithms to Compare',
             intro:
-                'We have pre-selected five algorithms for you: <strong>RSA (2048)</strong>, ' +
+                'We have clicked on five algorithms for you: <strong>RSA (2048)</strong>, ' +
                 '<strong>P-256</strong>, <strong>ML-DSA-44</strong>, <strong>MAYO-1</strong>, ' +
                 'and one variant of <strong>SLH-DSA</strong>. ' +
                 'You can tick the checkbox above any radar chart to change the selection ' +
@@ -159,54 +159,42 @@
         'SLH_DSA_PURE_SHA2_128F',
     ];
 
-    // Find the <input type="checkbox"> for a given algorithm.
-    // Primary strategy: match via Dash's JSON-serialised pattern-matching id
-    // using JS indexOf — avoids CSS selector issues with { and " characters.
-    // Fallback: walk the Mantine Checkbox label text for robustness.
-    function findCheckboxInput(algName) {
-        var needle = '"checkbox-' + algName + '"';
-        var candidates = document.querySelectorAll('#content-overview [id]');
-        for (var i = 0; i < candidates.length; i++) {
-            var id = candidates[i].getAttribute('id');
-            if (id && id.indexOf(needle) !== -1) {
-                var input = candidates[i].querySelector('input[type="checkbox"]');
-                if (input) return input;
-            }
-        }
-        // Fallback: label text search (strips U+200B added by soft_break_on_underscore)
-        var inputs = document.querySelectorAll('#content-overview input[type="checkbox"]');
-        for (var j = 0; j < inputs.length; j++) {
-            var root = inputs[j].closest('.mantine-Checkbox-root');
-            if (!root) continue;
-            var label = root.querySelector('label, [class*="Checkbox-label"]');
-            if (!label) continue;
-            var text = label.textContent.replace(/​/g, '').trim();
-            if (text === algName) return inputs[j];
-        }
-        return null;
+    // Click a button element reliably: if the Dash id landed on a wrapper div
+    // rather than the <button> itself, find the button inside it.
+    function clickButton(selector) {
+        var el = document.querySelector(selector);
+        if (!el) return;
+        var btn = el.tagName === 'BUTTON' ? el : el.querySelector('button');
+        if (btn) btn.click();
     }
 
-    // Reset all filters first (so target algorithms are guaranteed to be
-    // visible), then click each algorithm. The 2000 ms base delay gives the
-    // full reset → update_filtered_algorithms → update_shown_charts callback
-    // chain time to complete before any click lands, preventing a race where
-    // the reset re-render unchecks an early click. After all clicks, restore
-    // the scroll position so the tooltip stays visible.
+    // Reset all filters first, then wait until the overview is in a stable
+    // post-reset state (all checkboxes visible and unchecked for two
+    // consecutive polls ≈ 400 ms), then fire a hidden native <button> that
+    // triggers a Dash Python callback to set the five checkbox props directly.
+    // This avoids all React controlled-input event-system differences between
+    // Firefox and Chrome — a plain button click is reliable everywhere.
     function preselectTourAlgorithms() {
-        var resetBtn = document.querySelector('#reset-button');
-        if (resetBtn) resetBtn.click();
+        clickButton('#reset-button');
 
-        TOUR_ALGORITHMS.forEach(function (name, i) {
-            setTimeout(function () {
-                var input = findCheckboxInput(name);
-                if (input && !input.checked) input.click();
-            }, 2000 + i * 300);
-        });
+        var elapsed = 0;
+        var stableCount = 0;
+        var timer = setInterval(function () {
+            elapsed += 200;
+            var inputs = document.querySelectorAll('#content-overview input[type="checkbox"]');
+            var ready = inputs.length > 0 &&
+                Array.from(inputs).every(function (inp) { return !inp.checked; });
+            stableCount = ready ? stableCount + 1 : 0;
 
-        setTimeout(function () {
-            var main = document.querySelector('.mantine-AppShell-main');
-            if (main) main.scrollTop = 0;
-        }, 2000 + TOUR_ALGORITHMS.length * 300 + 300);
+            if (stableCount >= 2 || elapsed >= 8000) {
+                clearInterval(timer);
+                clickButton('#tour-preselect-btn');
+                setTimeout(function () {
+                    var main = document.querySelector('.mantine-AppShell-main');
+                    if (main) main.scrollTop = 0;
+                }, 600);
+            }
+        }, 200);
     }
 
     // -------------------------------------------------------------------------
@@ -250,11 +238,11 @@
         // "already seen" flag (used by the Replay button).
         startOverview: function (force) {
             if (!force && localStorage.getItem(TOUR_SEEN_KEY)) return;
-            if (typeof introJs === 'undefined') return;
+            if (typeof introJs === 'undefined' || !introJs.tour) return;
 
             // Wait until the overview grid has rendered at least one chart.
             waitForElement('#content-overview', function () {
-                var tour = introJs();
+                var tour = introJs.tour();
                 tour.setOptions(
                     commonOptions({
                         steps: resolveSteps(overviewSteps),
@@ -300,12 +288,12 @@
         // overview tour.
         startCompare: function () {
             if (localStorage.getItem(TOUR_PHASE_KEY) !== '2') return;
-            if (typeof introJs === 'undefined') return;
+            if (typeof introJs === 'undefined' || !introJs.tour) return;
 
             // Wait for the radar chart to appear (requires algorithms to be
             // selected before navigating here).
             waitForElement('#compare-radar', function () {
-                var tour = introJs();
+                var tour = introJs.tour();
                 tour.setOptions(
                     commonOptions({
                         steps: resolveSteps(compareSteps),
@@ -321,9 +309,8 @@
                         if (link) link.click();
                     }
                     setTimeout(function () {
-                        var resetBtn = document.querySelector('#reset-button');
-                        if (resetBtn) resetBtn.click();
-                    }, 300);
+                        clickButton('#reset-button');
+                    }, 600);
                 });
 
                 tour.onexit(function () {
