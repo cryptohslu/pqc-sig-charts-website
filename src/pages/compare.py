@@ -39,7 +39,8 @@ def generate_table(algs, df):
         data.append([alg_name, nist_level] + sizes + times)
 
     return dmc.Container(
-        [
+        id="compare-table",
+        children=[
             dmc.Table(
                 striped=True,
                 highlightOnHover=True,
@@ -72,6 +73,7 @@ def generate_radar(algs, df):
             count += 1
 
     return dmc.RadarChart(
+        id="compare-radar",
         w=600,
         h=600,
         data=data,

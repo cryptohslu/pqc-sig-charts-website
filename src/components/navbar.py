@@ -8,7 +8,8 @@ from components.dataset import DATASETS, DEFAULT_DATASET
 
 def nist_security_level_filter():
     return html.Div(
-        [
+        id="nist-level-filter-section",
+        children=[
             dmc.Stack(
                 [
                     dmc.Title("NIST Security Level", order=4),
@@ -38,7 +39,8 @@ def nist_security_level_filter():
 
 def sizes_filter():
     return html.Div(
-        [
+        id="sizes-filter-section",
+        children=[
             dmc.Stack(
                 [
                     dmc.Title("Keys & Signatures sizes", order=4),
@@ -108,7 +110,8 @@ def sizes_filter():
 
 def performance_filters():
     return html.Div(
-        [
+        id="performance-filter-section",
+        children=[
             dmc.Stack(
                 [
                     dmc.Title("Performance", order=4),
