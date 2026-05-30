@@ -5,17 +5,26 @@ from dash import ALL, Input, Output, State, callback, ctx, html, no_update
 
 from components.dataset import ALL_DATA, DEFAULT_DATASET, FEATURES
 
+_FEATURE_LABELS = [f.split("(")[0].strip() for f in FEATURES]
+
+_CHART_DATA: dict[str, dict[str, list]] = {}
+for _dataset, _df in ALL_DATA.items():
+    _CHART_DATA[_dataset] = {
+        row["Algorithm"]: [
+            {"feature": _FEATURE_LABELS[i], "value": row[feat]}
+            for i, feat in enumerate(FEATURES)
+        ]
+        for _, row in _df.iterrows()
+    }
+
 
 def soft_break_on_underscore(s: str) -> str:
     # U+200B = zero-width space (soft wrap opportunity)
     return s.replace("_", "_\u200b")
 
 
-def generate_radar_chart(alg_name, df):
-    data = []
-    raw_data = df[df["Algorithm"] == alg_name][FEATURES].squeeze(0)
-    for i, val in enumerate(raw_data):
-        data.append({"feature": FEATURES[i].split("(")[0].strip(), "value": val})
+def generate_radar_chart(alg_name, dataset):
+    data = _CHART_DATA[dataset][alg_name]
     return dmc.Box(
         style={"width": "250px"},
         children=[
@@ -180,9 +189,9 @@ def update_shown_charts(algs, n_algs, url, selected_dataset):
     if algs is None or n_algs is None:
         return no_update
 
-    df = ALL_DATA[selected_dataset or DEFAULT_DATASET]
-    n_algs_total = df.shape[0]
-    charts = [generate_radar_chart(alg_name, df) for alg_name in algs if algs[alg_name]]
+    dataset = selected_dataset or DEFAULT_DATASET
+    n_algs_total = ALL_DATA[dataset].shape[0]
+    charts = [generate_radar_chart(alg_name, dataset) for alg_name in algs if algs[alg_name]]
 
     return (
         charts,
