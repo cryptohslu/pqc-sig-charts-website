@@ -21,7 +21,7 @@ _COLUMNS = [
 dash.register_page(
     __name__,
     "/compare",
-    title="PQC DS",
+    title="PQC Digital Signatures",
     description="Comparative of PQC sigs available in OQS liboqs library.",
 )
 
@@ -142,5 +142,5 @@ def update_comparison(clicked_algs, url, selected_dataset, n_clicked):
             generate_radar(clicked_algs, df),
             generate_table(clicked_algs, df),
         ],
-        "PQC Signatures",
+        "PQC Digital Signatures",
     )
