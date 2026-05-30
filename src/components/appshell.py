@@ -1,5 +1,5 @@
 import dash_mantine_components as dmc
-from dash import Input, Output, State, callback, dcc, page_container
+from dash import Input, Output, State, callback, clientside_callback, dcc, html, page_container
 
 from components.header import create_header
 from components.navbar import create_navbar
@@ -17,6 +17,7 @@ def create_appshell(data, url_base_pathname):
                     create_header(data, url_base_pathname),
                     create_navbar(data),
                     dmc.AppShellMain(children=[
+                        html.Div(id="tour-placeholder", style={"display": "none"}),
                         page_container,
                         dmc.SimpleGrid(
                             id="content-overview",
@@ -90,3 +91,20 @@ def toggle_navbar(n_clicks, url, navbar):
             "desktop": False,
         }
     return navbar
+
+
+clientside_callback(
+    """
+    function(pathname) {
+        if (!window.pqcTour) return '';
+        if (pathname === '/sig-charts/' || pathname === '/sig-charts') {
+            window.pqcTour.startOverview(false);
+        } else if (pathname === '/sig-charts/compare/' || pathname === '/sig-charts/compare') {
+            window.pqcTour.startCompare();
+        }
+        return '';
+    }
+    """,
+    Output("tour-placeholder", "children"),
+    Input("url", "pathname"),
+)

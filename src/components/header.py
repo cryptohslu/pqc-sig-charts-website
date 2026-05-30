@@ -1,5 +1,5 @@
 import dash_mantine_components as dmc
-from dash import Input, Output, clientside_callback, dcc
+from dash import Input, Output, clientside_callback, dcc, html
 from dash_iconify import DashIconify
 
 theme_toggle = dmc.Switch(
@@ -88,6 +88,18 @@ def create_header(data, url_base_pathname):
                                         target="_blank",
                                         visibleFrom="md",
                                     ),
+                                    dmc.Tooltip(
+                                        label="Replay tour",
+                                        position="bottom",
+                                        children=dmc.ActionIcon(
+                                            DashIconify(icon="tabler:help", width=18),
+                                            id="tour-restart-button",
+                                            size="lg",
+                                            variant="subtle",
+                                            radius="xl",
+                                            n_clicks=0,
+                                        ),
+                                    ),
                                     theme_toggle,
                                 ],
                             ),
@@ -100,12 +112,25 @@ def create_header(data, url_base_pathname):
 
 
 clientside_callback(
-    """ 
+    """
     (switchOn) => {
-       document.documentElement.setAttribute('data-mantine-color-scheme', switchOn ? 'dark' : 'light');  
+       document.documentElement.setAttribute('data-mantine-color-scheme', switchOn ? 'dark' : 'light');
        return window.dash_clientside.no_update
     }
     """,
     Output("color-scheme-toggle", "id"),
     Input("color-scheme-toggle", "checked"),
+)
+
+clientside_callback(
+    """
+    function(n_clicks) {
+        if (n_clicks > 0 && window.pqcTour) {
+            window.pqcTour.restart();
+        }
+        return window.dash_clientside.no_update;
+    }
+    """,
+    Output("tour-restart-button", "id"),
+    Input("tour-restart-button", "n_clicks"),
 )
