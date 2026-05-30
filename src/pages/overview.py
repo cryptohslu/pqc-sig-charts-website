@@ -1,7 +1,7 @@
 import dash
 import dash_mantine_components as dmc
 import pandas as pd
-from dash import ALL, Input, Output, State, callback, no_update
+from dash import ALL, Input, Output, State, callback, ctx, html, no_update
 
 from components.dataset import ALL_DATA, DEFAULT_DATASET, FEATURES
 
@@ -48,41 +48,49 @@ def generate_radar_chart(alg_name, df):
                         persistence=True,
                         persistence_type="session",
                     ),
-                    dmc.RadarChart(
+                    html.Div(
                         id={
-                            "type": "radar-chart",
+                            "type": "radar-clickable",
                             "index": f"radar_{alg_name}",
                         },
-                        h=250,
-                        w=250,
-                        data=data,
-                        dataKey="feature",
-                        withPolarGrid=True,
-                        withPolarAngleAxis=True,
-                        withPolarRadiusAxis=True,
-                        polarRadiusAxisProps={
-                            "angle": 90,
-                            "scale": "log",
-                            "domain": [1, 10**11],
-                            "ticks": [1, 10**2, 10**4, 10**6, 10**8, 10**10],
-                            "tick": False,
-                        },
-                        radarProps={
-                            "isAnimationActive": False,
-                        },
-                        radarChartProps={
-                            "margin": {
-                                "top": 0,
-                                "right": 0,
-                                "bottom": 0,
-                                "left": 0,
+                        n_clicks=0,
+                        style={"cursor": "pointer"},
+                        children=dmc.RadarChart(
+                            id={
+                                "type": "radar-chart",
+                                "index": f"radar_{alg_name}",
                             },
-                            "outerRadius": "40%",
-                        },
-                        polarGridProps={
-                            "outerRadius": -10,
-                        },
-                        series=[{"name": "value", "color": "blue.4", "opacity": 0.5}],
+                            h=250,
+                            w=250,
+                            data=data,
+                            dataKey="feature",
+                            withPolarGrid=True,
+                            withPolarAngleAxis=True,
+                            withPolarRadiusAxis=True,
+                            polarRadiusAxisProps={
+                                "angle": 90,
+                                "scale": "log",
+                                "domain": [1, 10**11],
+                                "ticks": [1, 10**2, 10**4, 10**6, 10**8, 10**10],
+                                "tick": False,
+                            },
+                            radarProps={
+                                "isAnimationActive": False,
+                            },
+                            radarChartProps={
+                                "margin": {
+                                    "top": 0,
+                                    "right": 0,
+                                    "bottom": 0,
+                                    "left": 0,
+                                },
+                                "outerRadius": "40%",
+                            },
+                            polarGridProps={
+                                "outerRadius": -10,
+                            },
+                            series=[{"name": "value", "color": "blue.4", "opacity": 0.5}],
+                        ),
                     ),
                 ],
                 gap=0,
@@ -219,6 +227,34 @@ def update_compare_selection(clicked):
         if clicked[alg]:
             n_clicked += 1
     return f"Compare ({n_clicked})", {"value": n_clicked}
+
+
+@callback(
+    Output({"type": "checkbox-alg", "index": ALL}, "checked", allow_duplicate=True),
+    Input({"type": "radar-clickable", "index": ALL}, "n_clicks"),
+    [
+        State({"type": "checkbox-alg", "index": ALL}, "checked"),
+        State({"type": "checkbox-alg", "index": ALL}, "id"),
+        State({"type": "checkbox-alg", "index": ALL}, "disabled"),
+    ],
+    prevent_initial_call=True,
+)
+def toggle_checkbox_on_radar_click(_radar_clicks, checkbox_states, checkbox_ids, checkbox_disabled):
+    if not ctx.triggered or ctx.triggered_id is None:
+        return no_update
+
+    triggered_index = ctx.triggered_id["index"]  # e.g. "radar_ALG_NAME"
+    alg_name = triggered_index[len("radar_"):]
+    target_checkbox_index = f"checkbox-{alg_name}"
+
+    new_checked = list(checkbox_states)
+    for i, cb_id in enumerate(checkbox_ids):
+        if cb_id["index"] == target_checkbox_index:
+            if not checkbox_disabled[i]:
+                new_checked[i] = not checkbox_states[i]
+            break
+
+    return new_checked
 
 
 @callback(
