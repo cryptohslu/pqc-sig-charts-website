@@ -4,6 +4,23 @@
     var TOUR_SEEN_KEY = 'pqcTourSeen';
     var TOUR_PHASE_KEY = 'pqcTourPhase';
 
+    // Driver.js calls stopImmediatePropagation() on pointerdown in a capture
+    // listener, which prevents Firefox from applying the :active CSS state.
+    // By registering our capture listeners first (before driverObj.drive() is
+    // ever called), we fire before Driver.js's listener and can manually toggle
+    // a class to produce the pressed effect cross-browser.
+    document.addEventListener('pointerdown', function (e) {
+        var btn = e.target.closest && e.target.closest('.driver-popover-footer button');
+        if (btn) btn.classList.add('driver-btn-pressed');
+    }, true);
+    ['pointerup', 'pointercancel'].forEach(function (evt) {
+        document.addEventListener(evt, function () {
+            document.querySelectorAll('.driver-btn-pressed').forEach(function (btn) {
+                btn.classList.remove('driver-btn-pressed');
+            });
+        }, true);
+    });
+
     // Poll until an element matching `selector` exists in the DOM, then invoke
     // `callback`. Gives up after `maxMs` milliseconds.
     function waitForElement(selector, callback, maxMs) {
