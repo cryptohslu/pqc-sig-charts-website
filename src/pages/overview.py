@@ -63,7 +63,8 @@ def generate_radar_chart(alg_name, df):
                         polarRadiusAxisProps={
                             "angle": 90,
                             "scale": "log",
-                            "domain": [1, 10**5],
+                            "domain": [1, 10**11],
+                            "ticks": [1, 10**2, 10**4, 10**6, 10**8, 10**10],
                             "tick": False,
                         },
                         radarProps={
