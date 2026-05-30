@@ -1,6 +1,6 @@
 import dash_mantine_components as dmc
 import numpy as np
-from dash import ALL, Input, Output, State, callback, html
+from dash import ALL, Input, Output, State, callback, html, no_update
 from dash_iconify import DashIconify
 
 from components.dataset import DATASETS, DEFAULT_DATASET
@@ -33,7 +33,7 @@ def nist_security_level_filter():
                 ],
                 gap="xs",
             )
-        ]
+        ],
     )
 
 
@@ -104,7 +104,7 @@ def sizes_filter():
                 ],
                 gap="xs",
             )
-        ]
+        ],
     )
 
 
@@ -175,7 +175,7 @@ def performance_filters():
                 ],
                 gap="xs",
             )
-        ]
+        ],
     )
 
 
@@ -259,12 +259,27 @@ def reset_filters(n_clicks, algs):
     return (
         "",
         ("0", "1", "2", "3", "4", "5"),
-        (np.log10(32), np.log10(3_000_000)),
-        (np.log10(24), np.log10(2_500_000)),
+        (1.505149978319906, 6.477121254719663),
+        (1.380211241711606, 6.3979400086720375),
         (0, 75_000),
-        (0, np.log10(12 * 60 * 60 * 1e6)),
-        (0, np.log10(12 * 60 * 60 * 1e6)),
+        (0, 10.635483746814913),
+        (0, 10.635483746814913),
         (0, 6),
         len(algs) * [False],
         DEFAULT_DATASET,
     )
+
+
+_TOUR_ALGORITHMS = {"RSA-PSS-2048", "P-256", "ML-DSA-44", "MAYO-1", "SLH_DSA_PURE_SHA2_128F"}
+
+
+@callback(
+    Output({"type": "checkbox-alg", "index": ALL}, "checked", allow_duplicate=True),
+    Input("tour-preselect-btn", "n_clicks"),
+    State({"type": "checkbox-alg", "index": ALL}, "id"),
+    prevent_initial_call=True,
+)
+def preselect_tour_algorithms(n_clicks, all_ids):
+    if not n_clicks:
+        return no_update
+    return [("-".join(id_["index"].split("-")[1:]) in _TOUR_ALGORITHMS) for id_ in all_ids]

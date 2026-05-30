@@ -1,5 +1,5 @@
 import dash_mantine_components as dmc
-from dash import Input, Output, clientside_callback, dcc, html
+from dash import Input, Output, callback, clientside_callback, dcc, html, no_update
 from dash_iconify import DashIconify
 
 theme_toggle = dmc.Switch(
@@ -45,7 +45,7 @@ def create_header(data, url_base_pathname):
                                         n_clicks=0,
                                     ),
                                     dmc.Anchor(
-                                        ["PQC Signatures (76 / 76)"],
+                                        ["PQC Signatures (294 / 294)"],
                                         id="website-title",
                                         href=url_base_pathname,
                                         underline=False,
@@ -134,3 +134,17 @@ clientside_callback(
     Output("tour-restart-button", "id"),
     Input("tour-restart-button", "n_clicks"),
 )
+
+
+@callback(
+    [
+        Output("clicked-algs", "data", allow_duplicate=True),
+        Output("n-clicked-algs", "data", allow_duplicate=True),
+    ],
+    Input("tour-clear-btn", "n_clicks"),
+    prevent_initial_call=True,
+)
+def clear_tour_selections(n_clicks):
+    if not n_clicks:
+        return no_update, no_update
+    return {}, {"value": 0}

@@ -11,13 +11,15 @@ def create_appshell(data, url_base_pathname):
         forceColorScheme="dark",
         children=[
             dcc.Store(id="color-scheme-storage", storage_type="local"),
-            dmc.NotificationProvider(),
+            dmc.NotificationContainer(),
             dmc.AppShell(
                 [
                     create_header(data, url_base_pathname),
                     create_navbar(data),
                     dmc.AppShellMain(children=[
                         html.Div(id="tour-placeholder", style={"display": "none"}),
+                        html.Button(id="tour-preselect-btn", n_clicks=0, style={"display": "none"}),
+                        html.Button(id="tour-clear-btn", n_clicks=0, style={"display": "none"}),
                         page_container,
                         dmc.SimpleGrid(
                             id="content-overview",
