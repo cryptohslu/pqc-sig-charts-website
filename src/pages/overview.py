@@ -224,18 +224,23 @@ def update_clicked_algorithms(values, ids, url, prev_clicked):
     [
         Output("compare-button", "children"),
         Output("n-clicked-algs", "data"),
+        Output({"type": "checkbox-alg", "index": ALL}, "disabled"),
     ],
     Input("clicked-algs", "data"),
+    State({"type": "checkbox-alg", "index": ALL}, "checked"),
 )
-def update_compare_selection(clicked):
+def update_compare_selection_and_disable(clicked, checked):
     if clicked is None:
-        return no_update
+        return no_update, no_update, len(checked) * [False]
 
-    n_clicked = 0
-    for alg in clicked:
-        if clicked[alg]:
-            n_clicked += 1
-    return f"Compare ({n_clicked})", {"value": n_clicked}
+    n_clicked = sum(1 for v in clicked.values() if v)
+
+    if n_clicked < 5:
+        disabled_list = len(checked) * [False]
+    else:
+        disabled_list = [not is_checked for is_checked in checked]
+
+    return f"Compare ({n_clicked})", {"value": n_clicked}, disabled_list
 
 
 @callback(
@@ -266,24 +271,3 @@ def toggle_checkbox_on_radar_click(_radar_clicks, checkbox_states, checkbox_ids,
     return new_checked
 
 
-@callback(
-    Output({"type": "checkbox-alg", "index": ALL}, "disabled"),
-    [Input("n-clicked-algs", "data")],
-    [
-        State({"type": "checkbox-alg", "index": ALL}, "checked"),
-        State("n-selected-algs", "data"),
-    ],
-)
-def disable_checkboxes(clicked, checked, selected):
-    if clicked is None or selected is None:
-        return len(checked) * [False]
-
-    if clicked["value"] < 5:
-        return len(checked) * [False]
-
-    disabled_list = len(checked) * [False]
-    for i, is_checked in enumerate(checked):
-        if not is_checked:
-            disabled_list[i] = True
-
-    return disabled_list
