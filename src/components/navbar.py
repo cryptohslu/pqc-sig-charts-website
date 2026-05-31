@@ -1,6 +1,15 @@
 import dash_mantine_components as dmc
 import numpy as np
-from dash import ALL, Input, Output, State, callback, html, no_update
+from dash import (
+    ALL,
+    Input,
+    Output,
+    State,
+    callback,
+    clientside_callback,
+    html,
+    no_update,
+)
 from dash_iconify import DashIconify
 
 from components.dataset import DATASETS, DEFAULT_DATASET
@@ -238,7 +247,23 @@ def create_navbar(data):
     )
 
 
-@callback(
+clientside_callback(
+    f"""
+    function(n_clicks, algs, current_dataset) {{
+        return [
+            "",
+            ["0", "1", "2", "3", "4", "5"],
+            [1.505149978319906, 6.477121254719663],
+            [1.380211241711606, 6.3979400086720375],
+            [0, 75000],
+            [0, 10.635483746814913],
+            [0, 10.635483746814913],
+            [0, 6],
+            algs.map(() => false),
+            current_dataset !== "{DEFAULT_DATASET}" ? "{DEFAULT_DATASET}" : window.dash_clientside.no_update
+        ];
+    }}
+    """,
     [
         Output("alg-search", "value"),
         Output("nist-security-levels-checkbox", "value"),
@@ -252,22 +277,12 @@ def create_navbar(data):
         Output("dataset-selector", "value"),
     ],
     Input("reset-button", "n_clicks"),
-    State({"type": "checkbox-alg", "index": ALL}, "checked"),
+    [
+        State({"type": "checkbox-alg", "index": ALL}, "checked"),
+        State("dataset-selector", "value"),
+    ],
     prevent_initial_call=True,
 )
-def reset_filters(n_clicks, algs):
-    return (
-        "",
-        ("0", "1", "2", "3", "4", "5"),
-        (1.505149978319906, 6.477121254719663),
-        (1.380211241711606, 6.3979400086720375),
-        (0, 75_000),
-        (0, 10.635483746814913),
-        (0, 10.635483746814913),
-        (0, 6),
-        len(algs) * [False],
-        DEFAULT_DATASET,
-    )
 
 
 _TOUR_ALGORITHMS = {"RSA-PSS-2048", "P-256", "ML-DSA-44", "MAYO-1", "SLH_DSA_PURE_SHA2_128F"}

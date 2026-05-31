@@ -1,7 +1,16 @@
 import dash
 import dash_mantine_components as dmc
 import pandas as pd
-from dash import ALL, Input, Output, State, callback, ctx, html, no_update
+from dash import (
+    ALL,
+    Input,
+    Output,
+    State,
+    callback,
+    clientside_callback,
+    html,
+    no_update,
+)
 
 from components.dataset import ALL_DATA, DEFAULT_DATASET, FEATURES
 
@@ -10,10 +19,7 @@ _FEATURE_LABELS = [f.split("(")[0].strip() for f in FEATURES]
 _CHART_DATA: dict[str, dict[str, list]] = {}
 for _dataset, _df in ALL_DATA.items():
     _CHART_DATA[_dataset] = {
-        row["Algorithm"]: [
-            {"feature": _FEATURE_LABELS[i], "value": row[feat]}
-            for i, feat in enumerate(FEATURES)
-        ]
+        row["Algorithm"]: [{"feature": _FEATURE_LABELS[i], "value": row[feat]} for i, feat in enumerate(FEATURES)]
         for _, row in _df.iterrows()
     }
 
@@ -190,60 +196,35 @@ def update_shown_charts(algs, n_algs, url, selected_dataset):
         return no_update
 
     dataset = selected_dataset or DEFAULT_DATASET
-    n_algs_total = ALL_DATA[dataset].shape[0]
+    n_algs_total = len(_CHART_DATA[dataset])
     charts = [generate_radar_chart(alg_name, dataset) for alg_name in algs if algs[alg_name]]
 
-    return (
-        charts,
-        f"PQC Digital Signatures ({n_algs["value"]} / {n_algs_total})",
-    )
+    return charts, f"PQC Digital Signatures ({n_algs['value']} / {n_algs_total})"
 
 
-@callback(
-    Output("clicked-algs", "data"),
-    Input({"type": "checkbox-alg", "index": ALL}, "checked"),
-    [
-        State({"type": "checkbox-alg", "index": ALL}, "id"),
-        State("url", "pathname"),
-        State("clicked-algs", "data"),
-    ],
-)
-def update_clicked_algorithms(values, ids, url, prev_clicked):
-    if url == "/sig-charts/compare/":
-        return no_update
+clientside_callback(
+    """
+    function(radar_clicks, checkbox_states, checkbox_ids, checkbox_disabled) {
+        const ctx = window.dash_clientside.callback_context;
+        if (!ctx.triggered || ctx.triggered.length === 0 || !ctx.triggered_id) {
+            return window.dash_clientside.no_update;
+        }
+        const triggered_index = ctx.triggered_id.index;
+        const alg_name = triggered_index.slice('radar_'.length);
+        const target_index = 'checkbox-' + alg_name;
 
-    # Preserve state of filtered-out algorithms; only update what is currently visible.
-    clicked_algs = dict(prev_clicked) if prev_clicked else {}
-    for i, id_ in enumerate(ids):
-        alg_name = "-".join(id_["index"].split("-")[1:])
-        clicked_algs[alg_name] = bool(values[i])
-    return clicked_algs
-
-
-@callback(
-    [
-        Output("compare-button", "children"),
-        Output("n-clicked-algs", "data"),
-        Output({"type": "checkbox-alg", "index": ALL}, "disabled"),
-    ],
-    Input("clicked-algs", "data"),
-    State({"type": "checkbox-alg", "index": ALL}, "checked"),
-)
-def update_compare_selection_and_disable(clicked, checked):
-    if clicked is None:
-        return no_update, no_update, len(checked) * [False]
-
-    n_clicked = sum(1 for v in clicked.values() if v)
-
-    if n_clicked < 5:
-        disabled_list = len(checked) * [False]
-    else:
-        disabled_list = [not is_checked for is_checked in checked]
-
-    return f"Compare ({n_clicked})", {"value": n_clicked}, disabled_list
-
-
-@callback(
+        const new_checked = [...checkbox_states];
+        for (let i = 0; i < checkbox_ids.length; i++) {
+            if (checkbox_ids[i].index === target_index) {
+                if (!checkbox_disabled[i]) {
+                    new_checked[i] = !checkbox_states[i];
+                }
+                break;
+            }
+        }
+        return new_checked;
+    }
+    """,
     Output({"type": "checkbox-alg", "index": ALL}, "checked", allow_duplicate=True),
     Input({"type": "radar-clickable", "index": ALL}, "n_clicks"),
     [
@@ -253,21 +234,47 @@ def update_compare_selection_and_disable(clicked, checked):
     ],
     prevent_initial_call=True,
 )
-def toggle_checkbox_on_radar_click(_radar_clicks, checkbox_states, checkbox_ids, checkbox_disabled):
-    if not ctx.triggered or ctx.triggered_id is None:
-        return no_update
 
-    triggered_index = ctx.triggered_id["index"]  # e.g. "radar_ALG_NAME"
-    alg_name = triggered_index[len("radar_"):]
-    target_checkbox_index = f"checkbox-{alg_name}"
+clientside_callback(
+    """
+    function(values, ids, url, prev_clicked) {
+        if (url === '/sig-charts/compare/') return window.dash_clientside.no_update;
 
-    new_checked = list(checkbox_states)
-    for i, cb_id in enumerate(checkbox_ids):
-        if cb_id["index"] == target_checkbox_index:
-            if not checkbox_disabled[i]:
-                new_checked[i] = not checkbox_states[i]
-            break
+        const clicked_algs = prev_clicked ? {...prev_clicked} : {};
+        for (let i = 0; i < ids.length; i++) {
+            const alg_name = ids[i].index.split('-').slice(1).join('-');
+            clicked_algs[alg_name] = Boolean(values[i]);
+        }
+        return clicked_algs;
+    }
+    """,
+    Output("clicked-algs", "data"),
+    Input({"type": "checkbox-alg", "index": ALL}, "checked"),
+    [
+        State({"type": "checkbox-alg", "index": ALL}, "id"),
+        State("url", "pathname"),
+        State("clicked-algs", "data"),
+    ],
+)
 
-    return new_checked
+clientside_callback(
+    """
+    function(clicked, checked) {
+        if (!clicked) return [window.dash_clientside.no_update, window.dash_clientside.no_update, checked.map(() => false)];
 
+        const n_clicked = Object.values(clicked).filter(v => v).length;
+        const disabled = n_clicked < 5
+            ? checked.map(() => false)
+            : checked.map(c => !c);
 
+        return ['Compare (' + n_clicked + ')', {value: n_clicked}, disabled];
+    }
+    """,
+    [
+        Output("compare-button", "children"),
+        Output("n-clicked-algs", "data"),
+        Output({"type": "checkbox-alg", "index": ALL}, "disabled"),
+    ],
+    Input("clicked-algs", "data"),
+    State({"type": "checkbox-alg", "index": ALL}, "checked"),
+)
