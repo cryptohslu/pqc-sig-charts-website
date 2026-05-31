@@ -2,6 +2,10 @@ import dash_mantine_components as dmc
 from dash import Input, Output, callback, clientside_callback, dcc, html, no_update
 from dash_iconify import DashIconify
 
+from components.dataset import ALL_DATA, DEFAULT_DATASET
+
+_DEFAULT_N_ALGS = len(ALL_DATA[DEFAULT_DATASET])
+
 theme_toggle = dmc.Switch(
     offLabel=DashIconify(icon="radix-icons:sun", width=15, color=dmc.DEFAULT_THEME["colors"]["yellow"][8]),
     onLabel=DashIconify(
@@ -45,7 +49,7 @@ def create_header(data, url_base_pathname):
                                         n_clicks=0,
                                     ),
                                     dmc.Anchor(
-                                        ["PQC Signatures (294 / 294)"],
+                                        [f"PQC Signatures ({_DEFAULT_N_ALGS} / {_DEFAULT_N_ALGS})"],
                                         id="website-title",
                                         href=url_base_pathname,
                                         underline=False,
