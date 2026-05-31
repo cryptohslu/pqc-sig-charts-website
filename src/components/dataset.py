@@ -8,7 +8,7 @@ DATASETS = {
     "dataset_v6_x86_64_c8i.large.zst": "AWS C8i (x86-64 Intel Xeon 6975P-C)",
     "dataset_v6_x86_64_laptop.zst": "Laptop (x86-64 Intel Core i7-1185G7)",
     "dataset_v6_x86_64_pc.zst": "PC (x86-64 AMD Ryzen 9 7900X3D)",
-    "dataset_v6_aarch64_rpi4b.zst": "Raspberry Pi 4 Model B (AArch64 Cortex A72)",
+    "dataset_v6_aarch64_rpi4b.zst": "Raspberry Pi 4B (AArch64 Cortex A72)",
     "dataset_v6_aarch64_rpi5.zst": "Raspberry Pi 5 (AArch64 Cortex A76)",
 }
 
