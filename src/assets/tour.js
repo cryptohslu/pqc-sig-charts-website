@@ -180,6 +180,39 @@
             },
         },
         {
+            element: '#compare-dataset-selector',
+            popover: {
+                title: 'Compare Across Datasets',
+                description:
+                    'Benchmarks were collected on several different hardware platforms. Use this ' +
+                    'selector to pick a <strong>second dataset</strong> and see how the same ' +
+                    'algorithms perform on a different machine. ' +
+                    'Click <strong>Next</strong> to see what happens when a second dataset is selected.',
+            },
+        },
+        {
+            element: '#compare-radar-pair',
+            popover: {
+                title: 'Side-by-Side Radar Charts',
+                description:
+                    'With a second dataset selected, two radar charts are shown side by side: the ' +
+                    '<strong>base</strong> platform on the left and the <strong>comparison</strong> ' +
+                    'platform on the right.',
+            },
+        },
+        {
+            element: '#compare-table',
+            popover: {
+                title: 'Cross-Dataset Table',
+                description:
+                    'The table now pairs every timing metric: the <strong>base</strong> value on the ' +
+                    'left and the <strong>comparison</strong> value on the right. For convenience, a ' +
+                    'coloured percentage shows the relative difference: ' +
+                    '<strong style="color:#51cf66">green</strong> indicates the comparison is faster' +
+                    ', <strong style="color:#ff6b6b">red</strong> indicates it is slower.',
+            },
+        },
+        {
             popover: {
                 title: 'Tour Complete!',
                 description:
@@ -307,9 +340,11 @@
                     steps: compareSteps,
 
                     onNextClick: function (element, step, options) {
+                        var idx = options.state.activeIndex;
                         if (!driverObj.hasNextStep()) {
                             localStorage.removeItem(TOUR_PHASE_KEY);
                             driverObj.destroy();
+                            clickButton('#tour-clear-btn');
                             var overviewBtn = document.querySelector('#overview-button');
                             if (overviewBtn) {
                                 var link = overviewBtn.closest('a');
@@ -318,6 +353,11 @@
                             setTimeout(function () {
                                 clickButton('#reset-button');
                             }, 600);
+                        } else if (idx === 3) {
+                            clickButton('#tour-compare-dataset-btn');
+                            waitForElement('#compare-radar-2', function () {
+                                driverObj.moveNext();
+                            }, 10000);
                         } else {
                             driverObj.moveNext();
                         }
@@ -325,6 +365,7 @@
 
                     onDestroyStarted: function () {
                         localStorage.removeItem(TOUR_PHASE_KEY);
+                        clickButton('#tour-clear-btn');
                         driverObj.destroy();
                     },
                 });

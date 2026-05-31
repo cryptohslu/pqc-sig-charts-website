@@ -1,9 +1,9 @@
 import dash
 import dash_mantine_components as dmc
 import pandas as pd
-from dash import Input, Output, State, callback, clientside_callback, no_update
+from dash import Input, Output, State, callback, clientside_callback, html, no_update
 
-from components.dataset import ALL_DATA, DEFAULT_DATASET, FEATURES
+from components.dataset import ALL_DATA, DATASETS, DEFAULT_DATASET, FEATURES
 
 COLORS = ["#ff6b6b", "#339af0", "#51cf66", "#fcc419", "#cc5de8"]
 
@@ -28,7 +28,7 @@ dash.register_page(
 layout = []
 
 
-def generate_table(algs, df):
+def generate_table(algs, df, table_id="compare-table"):
     data = []
     tmp = pd.concat([df[df["Algorithm"] == alg_name] for alg_name in algs if algs[alg_name]])
     for i, row in tmp.iterrows():
@@ -39,7 +39,7 @@ def generate_table(algs, df):
         data.append([alg_name, nist_level] + sizes + times)
 
     return dmc.Container(
-        id="compare-table",
+        id=table_id,
         children=[
             dmc.Table(
                 striped=True,
@@ -56,7 +56,7 @@ def generate_table(algs, df):
     )
 
 
-def generate_radar(algs, df):
+def generate_radar(algs, df, chart_id="compare-radar"):
     data = []
     tmp = pd.concat([df[df["Algorithm"] == alg_name] for alg_name in algs if algs[alg_name]])
     for feature in FEATURES:
@@ -73,7 +73,7 @@ def generate_radar(algs, df):
             count += 1
 
     return dmc.RadarChart(
-        id="compare-radar",
+        id=chart_id,
         w=600,
         h=600,
         data=data,
@@ -92,6 +92,121 @@ def generate_radar(algs, df):
         },
         withLegend=True,
         series=series,
+    )
+
+
+def generate_radar_pair(algs, df_base, df_compare, base_label, compare_label):
+    def label(prefix, name):
+        return dmc.Text([html.B(f"{prefix}: "), name], size="xs", c="dimmed", ta="center", mt="xs")
+
+    return dmc.Group(
+        id="compare-radar-pair",
+        justify="center",
+        align="flex-start",
+        wrap="wrap",
+        gap="xl",
+        children=[
+            dmc.Stack(
+                [generate_radar(algs, df_base), label("Base", base_label)],
+                align="center",
+                gap=0,
+            ),
+            dmc.Stack(
+                [generate_radar(algs, df_compare, chart_id="compare-radar-2"), label("Comparison", compare_label)],
+                align="center",
+                gap=0,
+            ),
+        ],
+    )
+
+
+def generate_merged_table(algs, df_base, df_compare, base_label, compare_label):
+    _TIMING_COLS = ["Keygen (μs)", "Sign (μs)", "Verify (μs)"]
+    alg_names = [alg for alg in algs if algs[alg]]
+
+    rows = []
+    for alg_name in alg_names:
+        base_row = df_base[df_base["Algorithm"] == alg_name].iloc[0]
+        compare_row = df_compare[df_compare["Algorithm"] == alg_name].iloc[0]
+
+        cells = [
+            dmc.TableTd(alg_name),
+            dmc.TableTd(str(base_row["NIST Security Level"])),
+            dmc.TableTd(str(int(base_row["Pubkey (bytes)"]))),
+            dmc.TableTd(str(int(base_row["Privkey (bytes)"]))),
+            dmc.TableTd(str(int(base_row["Signature (bytes)"]))),
+        ]
+        for col in _TIMING_COLS:
+            base_val = float(base_row[col])
+            compare_val = float(compare_row[col])
+            diff = ((compare_val - base_val) / base_val * 100) if base_val != 0 else 0
+            diff_color = "var(--mantine-color-green-6)" if diff < 0 else "var(--mantine-color-red-6)"
+            diff_str = f"({diff:+.1f}%)" if abs(diff) < 1 else f"({diff:+.0f}%)"
+            cells.append(dmc.TableTd(f"{base_val:.1f}"))
+            cells.append(
+                dmc.TableTd(
+                    [
+                        f"{compare_val:.1f} ",
+                        html.Span(
+                            diff_str,
+                            style={"color": diff_color, "fontSize": "0.85em", "whiteSpace": "nowrap"},
+                        ),
+                    ]
+                )
+            )
+        rows.append(dmc.TableTr(cells))
+
+    thead = dmc.TableThead(
+        [
+            dmc.TableTr(
+                [
+                    dmc.TableTh("Algorithm", tableProps={"rowSpan": 2}),
+                    dmc.TableTh("NIST Level", tableProps={"rowSpan": 2}),
+                    dmc.TableTh("Pubkey (bytes)", tableProps={"rowSpan": 2}),
+                    dmc.TableTh("Privkey (bytes)", tableProps={"rowSpan": 2}),
+                    dmc.TableTh("Signature (bytes)", tableProps={"rowSpan": 2}),
+                    dmc.TableTh("Keygen (μs)", ta="center", tableProps={"colSpan": 2}),
+                    dmc.TableTh("Sign (μs)", ta="center", tableProps={"colSpan": 2}),
+                    dmc.TableTh("Verify (μs)", ta="center", tableProps={"colSpan": 2}),
+                ]
+            ),
+            dmc.TableTr(
+                [
+                    dmc.TableTh("Base"),
+                    dmc.TableTh("Comparison"),
+                    dmc.TableTh("Base"),
+                    dmc.TableTh("Comparison"),
+                    dmc.TableTh("Base"),
+                    dmc.TableTh("Comparison"),
+                ]
+            ),
+        ]
+    )
+
+    legend = dmc.Text(
+        [html.B("Base: "), base_label, " | ", html.B("Comparison: "), compare_label],
+        size="xs",
+        c="dimmed",
+        ta="center",
+        mt="xs",
+    )
+
+    return dmc.Container(
+        id="compare-table",
+        children=[
+            dmc.TableScrollContainer(
+                dmc.Table(
+                    striped=True,
+                    highlightOnHover=True,
+                    withTableBorder=True,
+                    withColumnBorders=True,
+                    children=[thead, dmc.TableTbody(rows)],
+                ),
+                minWidth=800,
+            ),
+            legend,
+        ],
+        size="95%",
     )
 
 
@@ -125,22 +240,37 @@ clientside_callback(
         Input("clicked-algs", "data"),
         Input("url", "pathname"),
         Input("dataset-selector", "value"),
+        Input("compare-dataset-selector", "value"),
     ],
     State("n-clicked-algs", "data"),
     prevent_initial_call=True,
 )
-def update_comparison(clicked_algs, url, selected_dataset, n_clicked):
+def update_comparison(clicked_algs, url, selected_dataset, compare_dataset, n_clicked):
     if url != "/sig-charts/compare/":
         return [], no_update
 
     if not clicked_algs or not any(clicked_algs.values()):
         return no_update
 
-    df = ALL_DATA[selected_dataset or DEFAULT_DATASET][_COLUMNS]
+    base_dataset = selected_dataset or DEFAULT_DATASET
+    df_base = ALL_DATA[base_dataset][_COLUMNS]
+
+    if compare_dataset:
+        df_compare = ALL_DATA[compare_dataset][_COLUMNS]
+        base_label = DATASETS[base_dataset]
+        compare_label = DATASETS[compare_dataset]
+        return (
+            [
+                generate_radar_pair(clicked_algs, df_base, df_compare, base_label, compare_label),
+                generate_merged_table(clicked_algs, df_base, df_compare, base_label, compare_label),
+            ],
+            "PQC Digital Signatures",
+        )
+
     return (
         [
-            generate_radar(clicked_algs, df),
-            generate_table(clicked_algs, df),
+            generate_radar(clicked_algs, df_base),
+            generate_table(clicked_algs, df_base),
         ],
         "PQC Digital Signatures",
     )
