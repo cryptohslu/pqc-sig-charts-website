@@ -47,9 +47,9 @@
             popover: {
                 title: 'Welcome to PQC Signatures',
                 description:
-                    'This webapp lets you explore and compare Post-Quantum Cryptography (PQC) digital ' +
+                    'This webapp lets you explore and compare Post-Quantum Cryptographic (PQC) digital ' +
                     'signature algorithms. This short tour explains how to use the website. ' +
-                    '<strong>It will only take a minute!</strong>',
+                    '<strong>It will only take 2-3 minutes!</strong>',
             },
         },
         {
@@ -116,8 +116,9 @@
                 title: 'Algorithm Overview',
                 description:
                     'Algorithms matching your filters are shown here as radar charts. Each chart has ' +
-                    'five axes: public key size, private key size, signature size, signing time, and ' +
-                    'verification time. <strong>The smaller the enclosed area, the better</strong>. ' +
+                    '<strong>six axes</strong>: <em>public key size</em>, <em>private key size</em>, ' +
+                    '<em>signature size</em>, <em>key generation</em>, <em>signing</em>, and ' +
+                    '<em>verification times</em>. <strong>The smaller the enclosed area, the better</strong>. ' +
                     'It means smaller keys and signatures, and faster operations.',
             },
         },
@@ -126,11 +127,10 @@
             popover: {
                 title: 'Select Algorithms to Compare',
                 description:
-                    'We have clicked on five algorithms for you: <strong>RSA (2048)</strong>, ' +
-                    '<strong>P-256</strong>, <strong>ML-DSA-44</strong>, <strong>MAYO-1</strong>, ' +
-                    'and one variant of <strong>SLH-DSA</strong>. ' +
-                    'You can tick the checkbox above any radar chart to change the selection ' +
-                    '(up to 5 algorithms). Click Next when you are ready.',
+                    'You can <em>click</em> on any radar chart (or tick the checkboxes directly) to change the selection ' +
+                    '(up to 5 algorithms). For this tour, we have just selected five algorithms for you: ' +
+                    '<strong>RSA (2048)</strong>, <strong>P-256</strong>, <strong>ML-DSA-44</strong>, ' +
+                    '<strong>MAYO-1</strong>, and one variant of <strong>SLH-DSA</strong>.'
             },
         },
         {
@@ -138,7 +138,7 @@
             popover: {
                 title: 'Compare',
                 description:
-                    'Once you have selected some algorithms, click <strong>Compare</strong> to open ' +
+                    'Once you have selected one or multiple algorithms, click <strong>Compare</strong> to open ' +
                     'the detailed comparison view. The tour will continue there automatically.',
                 side: 'bottom',
             },
@@ -161,9 +161,9 @@
                 description:
                     'All selected algorithms are overlaid on one chart, each in a different colour. ' +
                     'You can highlight the area of one algorithm by moving your mouse on top of the ' +
-                    "algorithm's name in the legend. An algorithm with a <strong>smaller enclosed " +
-                    'area</strong> uses smaller keys and signatures, and runs faster public ' +
-                    'operations, so closer to the centre is always better.',
+                    'algorithm\'s name in the legend. A point closer to the center on any axis means ' +
+                    'smaller keys and signatures, and faster operations. Therefore, a <strong>smaller ' +
+                    'enclosed area is always better</strong>.',
             },
         },
         {

@@ -47,7 +47,16 @@ def generate_table(algs, df, table_id="compare-table"):
                 withTableBorder=True,
                 withColumnBorders=True,
                 data={
-                    "head": df.columns.to_list(),
+                    "head": [
+                        "Algorithm",
+                        "NIST Security Level",
+                        "Public key size (bytes)",
+                        "Private key size (bytes)",
+                        "Signature size (bytes)",
+                        "Key generation time (μs)",
+                        "Signing time (μs)",
+                        "Verififcation time (μs)",
+                    ],
                     "body": data,
                 },
             )
@@ -161,13 +170,13 @@ def generate_merged_table(algs, df_base, df_compare, base_label, compare_label):
             dmc.TableTr(
                 [
                     dmc.TableTh("Algorithm", tableProps={"rowSpan": 2}),
-                    dmc.TableTh("NIST Level", tableProps={"rowSpan": 2}),
-                    dmc.TableTh("Pubkey (bytes)", tableProps={"rowSpan": 2}),
-                    dmc.TableTh("Privkey (bytes)", tableProps={"rowSpan": 2}),
-                    dmc.TableTh("Signature (bytes)", tableProps={"rowSpan": 2}),
-                    dmc.TableTh("Keygen (μs)", ta="center", tableProps={"colSpan": 2}),
-                    dmc.TableTh("Sign (μs)", ta="center", tableProps={"colSpan": 2}),
-                    dmc.TableTh("Verify (μs)", ta="center", tableProps={"colSpan": 2}),
+                    dmc.TableTh("NIST Security Level", tableProps={"rowSpan": 2}),
+                    dmc.TableTh("Public key size (bytes)", tableProps={"rowSpan": 2}),
+                    dmc.TableTh("Private key size (bytes)", tableProps={"rowSpan": 2}),
+                    dmc.TableTh("Signature size (bytes)", tableProps={"rowSpan": 2}),
+                    dmc.TableTh("Key generation time (μs)", ta="center", tableProps={"colSpan": 2}),
+                    dmc.TableTh("Signing time (μs)", ta="center", tableProps={"colSpan": 2}),
+                    dmc.TableTh("Verififcation time (μs)", ta="center", tableProps={"colSpan": 2}),
                 ]
             ),
             dmc.TableTr(
