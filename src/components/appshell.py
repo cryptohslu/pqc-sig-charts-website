@@ -64,15 +64,18 @@ def create_appshell(data, url_base_pathname):
                                 children=dmc.Group(
                                     justify="center",
                                     p="md",
-                                    children=dmc.Select(
-                                        id="compare-dataset-selector",
-                                        label="Compare against",
-                                        placeholder="Select a second dataset to compare",
-                                        data=[{"value": k, "label": v} for k, v in DATASETS.items()],
-                                        allowDeselect=True,
-                                        checkIconPosition="right",
-                                        clearable=True,
-                                        w=400,
+                                    children=dmc.Box(
+                                        id="compare-dataset-select-wrapper",
+                                        children=dmc.Select(
+                                            id="compare-dataset-selector",
+                                            label="Compare against",
+                                            placeholder="Select a second dataset to compare",
+                                            data=[{"value": k, "label": v} for k, v in DATASETS.items()],
+                                            allowDeselect=True,
+                                            checkIconPosition="right",
+                                            clearable=True,
+                                            w=400,
+                                        ),
                                     ),
                                 ),
                             ),

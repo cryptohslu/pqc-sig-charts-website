@@ -180,7 +180,7 @@
             },
         },
         {
-            element: '#compare-dataset-selector',
+            element: '#compare-dataset-select-wrapper',
             popover: {
                 title: 'Compare Across Datasets',
                 description:
