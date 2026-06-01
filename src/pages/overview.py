@@ -1,6 +1,5 @@
 import dash
 import dash_mantine_components as dmc
-import pandas as pd
 from dash import (
     ALL,
     Input,
@@ -129,34 +128,38 @@ layout = []
 )
 def update_filtered_algorithms(search, nist_levels, pubkey, privkey, sig, keypair, sign, verify, selected_dataset):
     df = ALL_DATA[selected_dataset or DEFAULT_DATASET]
-    pubkey = [10 ** pubkey[0], 10 ** pubkey[1]]
-    privkey = [10 ** privkey[0], 10 ** privkey[1]]
-    keypair = [10 ** keypair[0], 10 ** keypair[1]]
-    sign = [10 ** sign[0], 10 ** sign[1]]
-    verify = [10 ** verify[0], 10 ** verify[1]]
     all_algs = df["Algorithm"].to_list()
-    try:
-        tmp = pd.concat([df[df["NIST Security Level"] == int(l)] for l in nist_levels])
-    except ValueError:
+
+    if not nist_levels:
         return {alg: False for alg in all_algs}, {"value": 0}
 
-    if search:
-        tmp = tmp[tmp["Algorithm"].str.contains(search, case=False, na=False)]
-    tmp = tmp[(tmp["Pubkey (bytes)"] >= int(pubkey[0])) & (tmp["Pubkey (bytes)"] <= int(pubkey[1]))]
-    tmp = tmp[(tmp["Privkey (bytes)"] >= int(privkey[0])) & (tmp["Privkey (bytes)"] <= int(privkey[1]))]
-    tmp = tmp[(tmp["Signature (bytes)"] >= int(sig[0])) & (tmp["Signature (bytes)"] <= int(sig[1]))]
-    tmp = tmp[(tmp["Keygen (μs)"] >= keypair[0]) & (tmp["Keygen (μs)"] <= keypair[1])]
-    tmp = tmp[(tmp["Sign (μs)"] >= sign[0]) & (tmp["Sign (μs)"] <= sign[1])]
-    tmp = tmp[(tmp["Verify (μs)"] >= verify[0]) & (tmp["Verify (μs)"] <= verify[1])]
+    pubkey_lo, pubkey_hi = int(10 ** pubkey[0]), int(10 ** pubkey[1])
+    privkey_lo, privkey_hi = int(10 ** privkey[0]), int(10 ** privkey[1])
+    sig_lo, sig_hi = int(sig[0]), int(sig[1])
+    kp_lo, kp_hi = 10 ** keypair[0], 10 ** keypair[1]
+    sign_lo, sign_hi = 10 ** sign[0], 10 ** sign[1]
+    vfy_lo, vfy_hi = 10 ** verify[0], 10 ** verify[1]
 
-    selected = tmp["Algorithm"].to_list()
-    selected_algs = {}
-    for alg in all_algs:
-        if alg in selected:
-            selected_algs[alg] = True
-        else:
-            selected_algs[alg] = False
-    return selected_algs, {"value": len(selected)}
+    mask = (
+        df["NIST Security Level"].isin([int(l) for l in nist_levels])
+        & (df["Pubkey (bytes)"] >= pubkey_lo)
+        & (df["Pubkey (bytes)"] <= pubkey_hi)
+        & (df["Privkey (bytes)"] >= privkey_lo)
+        & (df["Privkey (bytes)"] <= privkey_hi)
+        & (df["Signature (bytes)"] >= sig_lo)
+        & (df["Signature (bytes)"] <= sig_hi)
+        & (df["Keygen (μs)"] >= kp_lo)
+        & (df["Keygen (μs)"] <= kp_hi)
+        & (df["Sign (μs)"] >= sign_lo)
+        & (df["Sign (μs)"] <= sign_hi)
+        & (df["Verify (μs)"] >= vfy_lo)
+        & (df["Verify (μs)"] <= vfy_hi)
+    )
+    if search:
+        mask &= df["Algorithm"].str.contains(search, case=False, na=False, regex=False)
+
+    selected = set(df.loc[mask, "Algorithm"])
+    return {alg: alg in selected for alg in all_algs}, {"value": len(selected)}
 
 
 @callback(
