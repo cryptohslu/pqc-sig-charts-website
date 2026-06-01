@@ -29,88 +29,72 @@ def soft_break_on_underscore(s: str) -> str:
     return s.replace("_", "_\u200b")
 
 
-def generate_radar_chart(alg_name, dataset):
+def generate_radar_chart(alg_name, dataset, clicked_algs=None):
     data = _CHART_DATA[dataset][alg_name]
-    return dmc.Box(
-        style={"width": "250px"},
+    is_selected = bool(clicked_algs and clicked_algs.get(alg_name))
+    return html.Div(
+        id={
+            "type": "radar-clickable",
+            "index": f"radar_{alg_name}",
+        },
+        n_clicks=0,
+        className="radar-card radar-card--selected" if is_selected else "radar-card",
+        style={"width": "250px", "padding": "6px 4px 0 4px"},
         children=[
-            dmc.Stack(
-                [
-                    dmc.Checkbox(
-                        id={
-                            "type": "checkbox-alg",
-                            "index": f"checkbox-{alg_name}",
-                        },
-                        checked=False,
-                        size="xs",
-                        variant="filled",
-                        label=dmc.Text(
-                            soft_break_on_underscore(alg_name),
-                            ta="center",
-                            style={
-                                "fontSize": "9pt",
-                                "width": "200px",
-                                "whiteSpace": "normal",
-                                "overflowWrap": "anywhere",
-                                "wordBreak": "break-word",
-                                "lineHeight": "1.1",
-                                "display": "-webkit-box",
-                                "WebkitBoxOrient": "vertical",
-                                "WebkitLineClamp": 2,
-                                "overflow": "hidden",
-                            },
-                        ),
-                        persistence=True,
-                        persistence_type="session",
-                    ),
-                    html.Div(
-                        id={
-                            "type": "radar-clickable",
-                            "index": f"radar_{alg_name}",
-                        },
-                        n_clicks=0,
-                        style={"cursor": "pointer"},
-                        children=dmc.RadarChart(
-                            id={
-                                "type": "radar-chart",
-                                "index": f"radar_{alg_name}",
-                            },
-                            h=250,
-                            w=250,
-                            data=data,
-                            dataKey="feature",
-                            withPolarGrid=True,
-                            withPolarAngleAxis=True,
-                            withPolarRadiusAxis=True,
-                            polarRadiusAxisProps={
-                                "angle": 90,
-                                "scale": "log",
-                                "domain": [1, 10**11],
-                                "ticks": [1, 10**2, 10**4, 10**6, 10**8, 10**10],
-                                "tick": False,
-                            },
-                            radarProps={
-                                "isAnimationActive": False,
-                            },
-                            radarChartProps={
-                                "margin": {
-                                    "top": 0,
-                                    "right": 0,
-                                    "bottom": 0,
-                                    "left": 0,
-                                },
-                                "outerRadius": "40%",
-                            },
-                            polarGridProps={
-                                "outerRadius": -10,
-                            },
-                            series=[{"name": "value", "color": "blue.4", "opacity": 0.5}],
-                        ),
-                    ),
-                ],
-                gap=0,
-                p=0,
-                align="center",
+            dmc.Text(
+                soft_break_on_underscore(alg_name),
+                ta="center",
+                fw=700,
+                style={
+                    "fontSize": "9pt",
+                    "maxWidth": "240px",
+                    "whiteSpace": "normal",
+                    "overflowWrap": "anywhere",
+                    "wordBreak": "break-word",
+                    "lineHeight": "1.1",
+                    "display": "-webkit-box",
+                    "WebkitBoxOrient": "vertical",
+                    "WebkitLineClamp": 2,
+                    "overflow": "hidden",
+                    "marginBottom": "2px",
+                },
+            ),
+            dmc.RadarChart(
+                id={
+                    "type": "radar-chart",
+                    "index": f"radar_{alg_name}",
+                },
+                h=350,
+                w=350,
+                data=data,
+                dataKey="feature",
+                withPolarGrid=True,
+                withPolarAngleAxis=True,
+                withPolarRadiusAxis=True,
+                polarRadiusAxisProps={
+                    "angle": 90,
+                    "scale": "log",
+                    "domain": [1, 10**11],
+                    "ticks": [1, 10**2, 10**4, 10**6, 10**8, 10**10],
+                    "tick": False,
+                },
+                radarProps={
+                    "isAnimationActive": False,
+                },
+                radarChartProps={
+                    "margin": {
+                        "top": 0,
+                        "right": 0,
+                        "bottom": 0,
+                        "left": 0,
+                    },
+                    "outerRadius": "40%",
+                },
+                polarGridProps={
+                    "outerRadius": -10,
+                },
+                series=[{"name": "value", "color": "blue.4", "opacity": 0.5}],
+                style={"margin": "-75px"},
             ),
         ],
     )
@@ -186,9 +170,10 @@ def update_filtered_algorithms(search, nist_levels, pubkey, privkey, sig, keypai
         Input("url", "pathname"),
     ],
     State("dataset-selector", "value"),
+    State("clicked-algs", "data"),
     prevent_initial_call="initial_duplicate",
 )
-def update_shown_charts(algs, n_algs, url, selected_dataset):
+def update_shown_charts(algs, n_algs, url, selected_dataset, clicked_algs):
     if url != "/sig-charts/":
         return [], no_update
 
@@ -197,84 +182,73 @@ def update_shown_charts(algs, n_algs, url, selected_dataset):
 
     dataset = selected_dataset or DEFAULT_DATASET
     n_algs_total = len(_CHART_DATA[dataset])
-    charts = [generate_radar_chart(alg_name, dataset) for alg_name in algs if algs[alg_name]]
+    charts = [generate_radar_chart(alg_name, dataset, clicked_algs) for alg_name in algs if algs[alg_name]]
 
     return charts, f"PQC Digital Signatures ({n_algs['value']} / {n_algs_total})"
 
 
 clientside_callback(
     """
-    function(radar_clicks, checkbox_states, checkbox_ids, checkbox_disabled) {
+    function(radar_clicks, clicked_algs, radar_ids) {
         const ctx = window.dash_clientside.callback_context;
         if (!ctx.triggered || ctx.triggered.length === 0 || !ctx.triggered_id) {
             return window.dash_clientside.no_update;
         }
-        const triggered_index = ctx.triggered_id.index;
-        const alg_name = triggered_index.slice('radar_'.length);
-        const target_index = 'checkbox-' + alg_name;
+        if (ctx.triggered[0].value === 0) return window.dash_clientside.no_update;
+        const noUpdate = window.dash_clientside.no_update;
+        const alg = ctx.triggered_id.index.slice('radar_'.length);
+        const is_selected = Boolean(clicked_algs && clicked_algs[alg]);
+        const n_selected = clicked_algs ? Object.values(clicked_algs).filter(Boolean).length : 0;
 
-        const new_checked = [...checkbox_states];
-        for (let i = 0; i < checkbox_ids.length; i++) {
-            if (checkbox_ids[i].index === target_index) {
-                if (!checkbox_disabled[i]) {
-                    new_checked[i] = !checkbox_states[i];
-                }
-                break;
-            }
-        }
-        return new_checked;
+        if (n_selected >= 5 && !is_selected) return [noUpdate, noUpdate];
+
+        const new_clicked = Object.assign({}, clicked_algs || {});
+        new_clicked[alg] = !is_selected;
+
+        const new_classnames = radar_ids.map(function(rid) {
+            return rid.index === ('radar_' + alg)
+                ? (!is_selected ? 'radar-card radar-card--selected' : 'radar-card')
+                : noUpdate;
+        });
+        return [new_clicked, new_classnames];
     }
     """,
-    Output({"type": "checkbox-alg", "index": ALL}, "checked", allow_duplicate=True),
+    [
+        Output("clicked-algs", "data", allow_duplicate=True),
+        Output({"type": "radar-clickable", "index": ALL}, "className", allow_duplicate=True),
+    ],
     Input({"type": "radar-clickable", "index": ALL}, "n_clicks"),
     [
-        State({"type": "checkbox-alg", "index": ALL}, "checked"),
-        State({"type": "checkbox-alg", "index": ALL}, "id"),
-        State({"type": "checkbox-alg", "index": ALL}, "disabled"),
+        State("clicked-algs", "data"),
+        State({"type": "radar-clickable", "index": ALL}, "id"),
     ],
     prevent_initial_call=True,
 )
 
 clientside_callback(
     """
-    function(values, ids, url, prev_clicked) {
-        if (url === '/sig-charts/compare/') return window.dash_clientside.no_update;
-
-        const clicked_algs = prev_clicked ? {...prev_clicked} : {};
-        for (let i = 0; i < ids.length; i++) {
-            const alg_name = ids[i].index.split('-').slice(1).join('-');
-            clicked_algs[alg_name] = Boolean(values[i]);
-        }
-        return clicked_algs;
-    }
-    """,
-    Output("clicked-algs", "data"),
-    Input({"type": "checkbox-alg", "index": ALL}, "checked"),
-    [
-        State({"type": "checkbox-alg", "index": ALL}, "id"),
-        State("url", "pathname"),
-        State("clicked-algs", "data"),
-    ],
-)
-
-clientside_callback(
-    """
-    function(clicked, checked) {
-        if (!clicked) return [window.dash_clientside.no_update, window.dash_clientside.no_update, checked.map(() => false)];
-
-        const n_clicked = Object.values(clicked).filter(v => v).length;
-        const disabled = n_clicked < 5
-            ? checked.map(() => false)
-            : checked.map(c => !c);
-
-        return ['Compare (' + n_clicked + ')', {value: n_clicked}, disabled];
+    function(clicked, radar_ids) {
+        if (!clicked) return [
+            window.dash_clientside.no_update,
+            window.dash_clientside.no_update,
+            radar_ids.map(() => 'radar-card')
+        ];
+        const n_clicked = Object.values(clicked).filter(Boolean).length;
+        const max_reached = n_clicked >= 5;
+        const classnames = radar_ids.map(function(rid) {
+            const alg = rid.index.slice('radar_'.length);
+            if (clicked[alg]) return 'radar-card radar-card--selected';
+            if (max_reached) return 'radar-card radar-card--disabled';
+            return 'radar-card';
+        });
+        return ['Compare (' + n_clicked + ')', {value: n_clicked}, classnames];
     }
     """,
     [
         Output("compare-button", "children"),
         Output("n-clicked-algs", "data"),
-        Output({"type": "checkbox-alg", "index": ALL}, "disabled"),
+        Output({"type": "radar-clickable", "index": ALL}, "className"),
     ],
     Input("clicked-algs", "data"),
-    State({"type": "checkbox-alg", "index": ALL}, "checked"),
+    State({"type": "radar-clickable", "index": ALL}, "id"),
 )

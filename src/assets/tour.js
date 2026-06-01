@@ -127,7 +127,7 @@
             popover: {
                 title: 'Select Algorithms to Compare',
                 description:
-                    'You can <em>click</em> on any radar chart (or tick the checkboxes directly) to change the selection ' +
+                    'You can <em>click</em> on any radar chart to change the selection ' +
                     '(up to 5 algorithms). For this tour, we have just selected five algorithms for you: ' +
                     '<strong>RSA (2048)</strong>, <strong>P-256</strong>, <strong>ML-DSA-44</strong>, ' +
                     '<strong>MAYO-1</strong>, and one variant of <strong>SLH-DSA</strong>.'
@@ -238,9 +238,9 @@
         if (btn) btn.click();
     }
 
-    // Reset filters, wait for a stable post-reset state (all checkboxes
-    // visible and unchecked for two consecutive polls ≈ 400 ms), then fire
-    // the hidden Dash button that triggers the Python preselect callback.
+    // Reset filters, wait for a stable post-reset state (cards visible and
+    // none selected for two consecutive polls ≈ 400 ms), then fire the hidden
+    // Dash button that triggers the Python preselect callback.
     function preselectTourAlgorithms() {
         clickButton('#reset-button');
 
@@ -248,9 +248,9 @@
         var stableCount = 0;
         var timer = setInterval(function () {
             elapsed += 200;
-            var inputs = document.querySelectorAll('#content-overview input[type="checkbox"]');
-            var ready = inputs.length > 0 &&
-                Array.from(inputs).every(function (inp) { return !inp.checked; });
+            var cards = document.querySelectorAll('#content-overview .radar-card');
+            var selected = document.querySelectorAll('#content-overview .radar-card--selected');
+            var ready = cards.length > 0 && selected.length === 0;
             stableCount = ready ? stableCount + 1 : 0;
 
             if (stableCount >= 2 || elapsed >= 8000) {

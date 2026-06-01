@@ -1,7 +1,6 @@
 import dash_mantine_components as dmc
 import numpy as np
 from dash import (
-    ALL,
     Input,
     Output,
     State,
@@ -249,7 +248,7 @@ def create_navbar(data):
 
 clientside_callback(
     f"""
-    function(n_clicks, algs, current_dataset) {{
+    function(n_clicks, current_dataset) {{
         return [
             "",
             ["0", "1", "2", "3", "4", "5"],
@@ -259,7 +258,7 @@ clientside_callback(
             [0, 10.635483746814913],
             [0, 10.635483746814913],
             [0, 6],
-            algs.map(() => false),
+            {{}},
             current_dataset !== "{DEFAULT_DATASET}" ? "{DEFAULT_DATASET}" : window.dash_clientside.no_update
         ];
     }}
@@ -273,14 +272,11 @@ clientside_callback(
         Output("keypair-slider", "value"),
         Output("sign-slider", "value"),
         Output("verify-slider", "value"),
-        Output({"type": "checkbox-alg", "index": ALL}, "checked"),
+        Output("clicked-algs", "data", allow_duplicate=True),
         Output("dataset-selector", "value"),
     ],
     Input("reset-button", "n_clicks"),
-    [
-        State({"type": "checkbox-alg", "index": ALL}, "checked"),
-        State("dataset-selector", "value"),
-    ],
+    State("dataset-selector", "value"),
     prevent_initial_call=True,
 )
 
@@ -289,12 +285,11 @@ _TOUR_ALGORITHMS = {"RSA-PSS-2048", "P-256", "ML-DSA-44", "MAYO-1", "SLH_DSA_PUR
 
 
 @callback(
-    Output({"type": "checkbox-alg", "index": ALL}, "checked", allow_duplicate=True),
+    Output("clicked-algs", "data", allow_duplicate=True),
     Input("tour-preselect-btn", "n_clicks"),
-    State({"type": "checkbox-alg", "index": ALL}, "id"),
     prevent_initial_call=True,
 )
-def preselect_tour_algorithms(n_clicks, all_ids):
+def preselect_tour_algorithms(n_clicks):
     if not n_clicks:
         return no_update
-    return [("-".join(id_["index"].split("-")[1:]) in _TOUR_ALGORITHMS) for id_ in all_ids]
+    return {alg: True for alg in _TOUR_ALGORITHMS}
