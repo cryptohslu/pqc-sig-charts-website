@@ -5,7 +5,6 @@ from dash import (
     State,
     callback,
     clientside_callback,
-    dcc,
     html,
     page_container,
 )
@@ -18,9 +17,8 @@ from components.navbar import create_navbar
 def create_appshell(data, url_base_pathname):
     return dmc.MantineProvider(
         id="m2d-mantine-provider",
-        forceColorScheme="dark",
+        defaultColorScheme="auto",
         children=[
-            dcc.Store(id="color-scheme-storage", storage_type="local"),
             dmc.NotificationContainer(),
             dmc.AppShell(
                 [

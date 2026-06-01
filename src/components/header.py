@@ -14,7 +14,6 @@ theme_toggle = dmc.Switch(
         color=dmc.DEFAULT_THEME["colors"]["yellow"][6],
     ),
     id="color-scheme-toggle",
-    persistence=True,
     color="grey",
 )
 
@@ -117,13 +116,32 @@ def create_header(data, url_base_pathname):
 
 clientside_callback(
     """
-    (switchOn) => {
-       document.documentElement.setAttribute('data-mantine-color-scheme', switchOn ? 'dark' : 'light');
-       return window.dash_clientside.no_update
+    function(pathname) {
+        const stored = localStorage.getItem('pqc-color-scheme');
+        let isDark;
+        if (stored === 'dark') isDark = true;
+        else if (stored === 'light') isDark = false;
+        else isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-mantine-color-scheme', isDark ? 'dark' : 'light');
+        return isDark;
+    }
+    """,
+    Output("color-scheme-toggle", "checked"),
+    Input("url", "pathname"),
+)
+
+clientside_callback(
+    """
+    function(switchOn) {
+        const scheme = switchOn ? 'dark' : 'light';
+        localStorage.setItem('pqc-color-scheme', scheme);
+        document.documentElement.setAttribute('data-mantine-color-scheme', scheme);
+        return window.dash_clientside.no_update;
     }
     """,
     Output("color-scheme-toggle", "id"),
     Input("color-scheme-toggle", "checked"),
+    prevent_initial_call=True,
 )
 
 clientside_callback(
