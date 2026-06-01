@@ -23,7 +23,6 @@ def create_header(data, url_base_pathname):
         px=25,
         children=[
             dcc.Location(id="url", refresh=False),
-            dcc.Store(id="n-selected-algs", storage_type="session"),
             dcc.Store(id="selected-algs", storage_type="session"),
             dcc.Store(id="n-clicked-algs", storage_type="session"),
             dcc.Store(id="clicked-algs", storage_type="session"),

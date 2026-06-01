@@ -110,10 +110,7 @@ layout = []
 
 
 @callback(
-    [
-        Output("selected-algs", "data"),
-        Output("n-selected-algs", "data"),
-    ],
+    Output("selected-algs", "data"),
     [
         Input("alg-search", "value"),
         Input("nist-security-levels-checkbox", "value"),
@@ -128,10 +125,9 @@ layout = []
 )
 def update_filtered_algorithms(search, nist_levels, pubkey, privkey, sig, keypair, sign, verify, selected_dataset):
     df = ALL_DATA[selected_dataset or DEFAULT_DATASET]
-    all_algs = df["Algorithm"].to_list()
 
     if not nist_levels:
-        return {alg: False for alg in all_algs}, {"value": 0}
+        return []
 
     pubkey_lo, pubkey_hi = int(10 ** pubkey[0]), int(10 ** pubkey[1])
     privkey_lo, privkey_hi = int(10 ** privkey[0]), int(10 ** privkey[1])
@@ -158,8 +154,7 @@ def update_filtered_algorithms(search, nist_levels, pubkey, privkey, sig, keypai
     if search:
         mask &= df["Algorithm"].str.contains(search, case=False, na=False, regex=False)
 
-    selected = set(df.loc[mask, "Algorithm"])
-    return {alg: alg in selected for alg in all_algs}, {"value": len(selected)}
+    return df.loc[mask, "Algorithm"].unique().tolist()
 
 
 @callback(
@@ -169,25 +164,24 @@ def update_filtered_algorithms(search, nist_levels, pubkey, privkey, sig, keypai
     ],
     [
         Input("selected-algs", "data"),
-        Input("n-selected-algs", "data"),
         Input("url", "pathname"),
     ],
     State("dataset-selector", "value"),
     State("clicked-algs", "data"),
     prevent_initial_call="initial_duplicate",
 )
-def update_shown_charts(algs, n_algs, url, selected_dataset, clicked_algs):
+def update_shown_charts(algs, url, selected_dataset, clicked_algs):
     if url != "/sig-charts/":
         return [], no_update
 
-    if algs is None or n_algs is None:
+    if algs is None:
         return no_update
 
     dataset = selected_dataset or DEFAULT_DATASET
     n_algs_total = len(_CHART_DATA[dataset])
-    charts = [generate_radar_chart(alg_name, dataset, clicked_algs) for alg_name in algs if algs[alg_name]]
+    charts = [generate_radar_chart(alg_name, dataset, clicked_algs) for alg_name in algs]
 
-    return charts, f"PQC Digital Signatures ({n_algs['value']} / {n_algs_total})"
+    return charts, f"PQC Digital Signatures ({len(algs)} / {n_algs_total})"
 
 
 clientside_callback(
