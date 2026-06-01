@@ -48,6 +48,7 @@ def create_appshell(data, url_base_pathname):
                                 },
                                 spacing=0,
                                 verticalSpacing="xs",
+                                style={"margin": "-15px"},
                             ),
                             dmc.Stack(
                                 id="content-compare",
