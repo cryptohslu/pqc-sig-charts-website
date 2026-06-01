@@ -129,27 +129,20 @@ def update_filtered_algorithms(search, nist_levels, pubkey, privkey, sig, keypai
     if not nist_levels:
         return []
 
-    pubkey_lo, pubkey_hi = int(10 ** pubkey[0]), int(10 ** pubkey[1])
-    privkey_lo, privkey_hi = int(10 ** privkey[0]), int(10 ** privkey[1])
-    sig_lo, sig_hi = int(sig[0]), int(sig[1])
-    kp_lo, kp_hi = 10 ** keypair[0], 10 ** keypair[1]
-    sign_lo, sign_hi = 10 ** sign[0], 10 ** sign[1]
-    vfy_lo, vfy_hi = 10 ** verify[0], 10 ** verify[1]
-
     mask = (
         df["NIST Security Level"].isin([int(l) for l in nist_levels])
-        & (df["Pubkey (bytes)"] >= pubkey_lo)
-        & (df["Pubkey (bytes)"] <= pubkey_hi)
-        & (df["Privkey (bytes)"] >= privkey_lo)
-        & (df["Privkey (bytes)"] <= privkey_hi)
-        & (df["Signature (bytes)"] >= sig_lo)
-        & (df["Signature (bytes)"] <= sig_hi)
-        & (df["Keygen (μs)"] >= kp_lo)
-        & (df["Keygen (μs)"] <= kp_hi)
-        & (df["Sign (μs)"] >= sign_lo)
-        & (df["Sign (μs)"] <= sign_hi)
-        & (df["Verify (μs)"] >= vfy_lo)
-        & (df["Verify (μs)"] <= vfy_hi)
+        & (df["Pubkey (bytes)"] >= int(10 ** pubkey[0]))
+        & (df["Pubkey (bytes)"] <= int(10 ** pubkey[1]))
+        & (df["Privkey (bytes)"] >= int(10 ** privkey[0]))
+        & (df["Privkey (bytes)"] <= int(10 ** privkey[1]))
+        & (df["Signature (bytes)"] >= int(sig[0]))
+        & (df["Signature (bytes)"] <= int(sig[1]))
+        & (df["Keygen (μs)"] >= 10 ** keypair[0])
+        & (df["Keygen (μs)"] <= 10 ** keypair[1])
+        & (df["Sign (μs)"] >= 10 ** sign[0])
+        & (df["Sign (μs)"] <= 10 ** sign[1])
+        & (df["Verify (μs)"] >= 10 ** verify[0])
+        & (df["Verify (μs)"] <= 10 ** verify[1])
     )
     if search:
         mask &= df["Algorithm"].str.contains(search, case=False, na=False, regex=False)
