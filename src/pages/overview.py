@@ -24,7 +24,7 @@ for _dataset, _df in ALL_DATA.items():
     }
 
 
-def soft_break_on_underscore(s: str) -> str:
+def add_soft_break(s: str) -> str:
     # U+200B = zero-width space (soft wrap opportunity)
     return s.replace("_", "_\u200b")
 
@@ -42,11 +42,11 @@ def generate_radar_chart(alg_name, dataset, clicked_algs=None):
         style={"width": "250px", "padding": "6px 4px 0 4px"},
         children=[
             dmc.Text(
-                soft_break_on_underscore(alg_name),
+                add_soft_break(alg_name),
                 ta="center",
                 fw=700,
                 style={
-                    "fontSize": "9pt",
+                    "fontSize": "10pt",
                     "maxWidth": "240px",
                     "whiteSpace": "normal",
                     "overflowWrap": "anywhere",
