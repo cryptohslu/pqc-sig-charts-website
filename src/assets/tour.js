@@ -268,6 +268,8 @@
     // Public API
     // -------------------------------------------------------------------------
 
+    var TOTAL_STEPS = overviewSteps.length + compareSteps.length;
+
     window.pqcTour = {
 
         startOverview: function (force) {
@@ -279,6 +281,7 @@
             waitForElement('#content-overview', function () {
                 var driverObj = driver({
                     showProgress: true,
+                    progressText: '{{current}} / ' + TOTAL_STEPS,
                     allowClose: true,
                     nextBtnText: 'Next',
                     prevBtnText: 'Back',
@@ -331,13 +334,22 @@
             var driver = window.driver.js.driver;
 
             waitForElement('#compare-radar', function () {
+                var offset = overviewSteps.length;
+                var steps = compareSteps.map(function (step, i) {
+                    return Object.assign({}, step, {
+                        popover: Object.assign({}, step.popover, {
+                            progressText: (offset + i + 1) + ' / ' + TOTAL_STEPS,
+                        }),
+                    });
+                });
+
                 var driverObj = driver({
                     showProgress: true,
                     allowClose: true,
                     nextBtnText: 'Next',
                     prevBtnText: 'Back',
                     doneBtnText: 'Done',
-                    steps: compareSteps,
+                    steps: steps,
 
                     onNextClick: function (element, step, options) {
                         var idx = options.state.activeIndex;
