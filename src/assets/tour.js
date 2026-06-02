@@ -333,7 +333,8 @@
 
             var driver = window.driver.js.driver;
 
-            waitForElement('#compare-radar', function () {
+            // Defined before waitForElement to avoid any hoisting ambiguity.
+            var startDriver = function () {
                 var offset = overviewSteps.length;
                 var steps = compareSteps.map(function (step, i) {
                     return Object.assign({}, step, {
@@ -383,6 +384,34 @@
                 });
 
                 driverObj.drive();
+            };
+
+            waitForElement('#compare-radar', function () {
+                if (document.querySelector('#compare-radar-2')) {
+                    // A compare dataset was selected before arriving here.
+                    // Use Dash's set_props API to update the selector value
+                    // directly on the client, bypassing any server round-trip,
+                    // then wait for update_comparison to re-render the
+                    // single-radar layout before starting the driver.
+                    window.dash_clientside.set_props(
+                        'compare-dataset-selector',
+                        { value: null }
+                    );
+                    var elapsed = 0;
+                    var timer = setInterval(function () {
+                        elapsed += 150;
+                        var radar = document.querySelector('#compare-radar');
+                        var radar2 = document.querySelector('#compare-radar-2');
+                        if (radar && !radar2) {
+                            clearInterval(timer);
+                            startDriver();
+                        } else if (elapsed >= 8000) {
+                            clearInterval(timer);
+                        }
+                    }, 150);
+                } else {
+                    startDriver();
+                }
             }, 10000);
         },
 
