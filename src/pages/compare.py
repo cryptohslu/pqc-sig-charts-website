@@ -66,20 +66,22 @@ def generate_table(algs, df, table_id="compare-table"):
 
 
 def generate_radar(algs, df, chart_id="compare-radar"):
+    alg_names_enabled = [alg for alg in algs if algs[alg]]
+    alg_names_present = [alg for alg in alg_names_enabled if not df[df["Algorithm"] == alg].empty]
+
     data = []
-    tmp = pd.concat([df[df["Algorithm"] == alg_name] for alg_name in algs if algs[alg_name]])
-    for feature in FEATURES:
-        serie = {"feature": feature}
-        for i, row in tmp.iterrows():
-            serie[row["Algorithm"]] = row[feature]
-        data.append(serie)
+    if alg_names_present:
+        tmp = pd.concat([df[df["Algorithm"] == alg_name] for alg_name in alg_names_present])
+        for feature in FEATURES:
+            serie = {"feature": feature}
+            for _, row in tmp.iterrows():
+                serie[row["Algorithm"]] = row[feature]
+            data.append(serie)
 
     series = []
-    count = 0
-    for alg in algs:
-        if algs[alg]:
+    for count, alg in enumerate(alg_names_enabled):
+        if alg in alg_names_present:
             series.append({"name": alg, "color": COLORS[count], "opacity": 0.25})
-            count += 1
 
     return dmc.RadarChart(
         id=chart_id,
@@ -136,7 +138,8 @@ def generate_merged_table(algs, df_base, df_compare, base_label, compare_label):
     rows = []
     for alg_name in alg_names:
         base_row = df_base[df_base["Algorithm"] == alg_name].iloc[0]
-        compare_row = df_compare[df_compare["Algorithm"] == alg_name].iloc[0]
+        compare_rows = df_compare[df_compare["Algorithm"] == alg_name]
+        missing_in_compare = compare_rows.empty
 
         cells = [
             dmc.TableTd(alg_name),
@@ -147,22 +150,25 @@ def generate_merged_table(algs, df_base, df_compare, base_label, compare_label):
         ]
         for col in _TIMING_COLS:
             base_val = float(base_row[col])
-            compare_val = float(compare_row[col])
-            diff = ((compare_val - base_val) / base_val * 100) if base_val != 0 else 0
-            diff_color = "var(--mantine-color-green-6)" if diff < 0 else "var(--mantine-color-red-6)"
-            diff_str = f"({diff:+.1f}%)" if abs(diff) < 1 else f"({diff:+.0f}%)"
             cells.append(dmc.TableTd(f"{base_val:.1f}"))
-            cells.append(
-                dmc.TableTd(
-                    [
-                        f"{compare_val:.1f} ",
-                        html.Span(
-                            diff_str,
-                            style={"color": diff_color, "fontSize": "0.85em", "whiteSpace": "nowrap"},
-                        ),
-                    ]
+            if missing_in_compare:
+                cells.append(dmc.TableTd("—"))
+            else:
+                compare_val = float(compare_rows.iloc[0][col])
+                diff = ((compare_val - base_val) / base_val * 100) if base_val != 0 else 0
+                diff_color = "var(--mantine-color-green-6)" if diff < 0 else "var(--mantine-color-red-6)"
+                diff_str = f"({diff:+.1f}%)" if abs(diff) < 1 else f"({diff:+.0f}%)"
+                cells.append(
+                    dmc.TableTd(
+                        [
+                            f"{compare_val:.1f} ",
+                            html.Span(
+                                diff_str,
+                                style={"color": diff_color, "fontSize": "0.85em", "whiteSpace": "nowrap"},
+                            ),
+                        ]
+                    )
                 )
-            )
         rows.append(dmc.TableTr(cells))
 
     thead = dmc.TableThead(
