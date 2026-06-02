@@ -237,15 +237,20 @@ clientside_callback(
     """
     function(children) {
         var sups = {2: '²', 3: '³', 4: '⁴', 5: '⁵', 6: '⁶', 7: '⁷', 8: '⁸', 9: '⁹', 10: '¹⁰'};
-        function fmt() {
-            document.querySelectorAll('.recharts-polar-radius-axis tspan').forEach(function(el) {
+        function fmt(attempt) {
+            var els = document.querySelectorAll('.recharts-polar-radius-axis tspan');
+            if (els.length === 0 && attempt < 30) {
+                requestAnimationFrame(function() { fmt(attempt + 1); });
+                return;
+            }
+            els.forEach(function(el) {
                 var val = parseFloat(el.textContent);
                 if (isNaN(val) || val <= 10) return;
                 var exp = Math.round(Math.log10(val));
                 if (sups[exp]) el.textContent = '10' + sups[exp];
             });
         }
-        requestAnimationFrame(fmt);
+        requestAnimationFrame(function() { fmt(0); });
         return window.dash_clientside.no_update;
     }
     """,
