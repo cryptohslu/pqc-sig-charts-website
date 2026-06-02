@@ -239,8 +239,8 @@
     }
 
     // Reset filters, wait for a stable post-reset state (cards visible and
-    // none selected for two consecutive polls ≈ 400 ms), then fire the hidden
-    // Dash button that triggers the Python preselect callback.
+    // none selected for two consecutive polls ≈ 400 ms), then set the
+    // pre-selected algorithms directly via set_props.
     function preselectTourAlgorithms() {
         clickButton('#reset-button');
 
@@ -255,7 +255,15 @@
 
             if (stableCount >= 2 || elapsed >= 8000) {
                 clearInterval(timer);
-                clickButton('#tour-preselect-btn');
+                window.dash_clientside.set_props('clicked-algs', {
+                    data: {
+                        'RSA-PSS-2048': true,
+                        'P-256': true,
+                        'ML-DSA-44': true,
+                        'MAYO-1': true,
+                        'SLH_DSA_PURE_SHA2_128F': true,
+                    },
+                });
                 setTimeout(function () {
                     var main = document.querySelector('.mantine-AppShell-main');
                     if (main) main.scrollTop = 0;
@@ -357,7 +365,7 @@
                         if (!driverObj.hasNextStep()) {
                             localStorage.removeItem(TOUR_PHASE_KEY);
                             driverObj.destroy();
-                            clickButton('#tour-clear-btn');
+                            window.dash_clientside.set_props('compare-dataset-selector', { value: null });
                             var overviewBtn = document.querySelector('#overview-button');
                             if (overviewBtn) {
                                 var link = overviewBtn.closest('a');
@@ -367,7 +375,9 @@
                                 clickButton('#reset-button');
                             }, 600);
                         } else if (idx === 3) {
-                            clickButton('#tour-compare-dataset-btn');
+                            window.dash_clientside.set_props('compare-dataset-selector', {
+                                value: 'dataset_v6_x86_64_c8a.large.zst',
+                            });
                             waitForElement('#compare-radar-2', function () {
                                 driverObj.moveNext();
                             }, 10000);
@@ -378,7 +388,7 @@
 
                     onDestroyStarted: function () {
                         localStorage.removeItem(TOUR_PHASE_KEY);
-                        clickButton('#tour-clear-btn');
+                        window.dash_clientside.set_props('compare-dataset-selector', { value: null });
                         driverObj.destroy();
                     },
                 });

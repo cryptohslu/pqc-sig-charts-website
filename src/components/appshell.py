@@ -27,9 +27,6 @@ def create_appshell(data, url_base_pathname):
                     dmc.AppShellMain(
                         children=[
                             html.Div(id="tour-placeholder", style={"display": "none"}),
-                            html.Button(id="tour-preselect-btn", n_clicks=0, style={"display": "none"}),
-                            html.Button(id="tour-clear-btn", n_clicks=0, style={"display": "none"}),
-                            html.Button(id="tour-compare-dataset-btn", n_clicks=0, style={"display": "none"}),
                             page_container,
                             dmc.SimpleGrid(
                                 id="content-overview",
@@ -151,24 +148,6 @@ clientside_callback(
 def sync_compare_selector(base_dataset):
     filtered = [{"value": k, "label": v} for k, v in DATASETS.items() if k != base_dataset]
     return filtered, None
-
-
-@callback(
-    Output("compare-dataset-selector", "value", allow_duplicate=True),
-    Input("tour-compare-dataset-btn", "n_clicks"),
-    prevent_initial_call=True,
-)
-def set_tour_compare_dataset(_):
-    return "dataset_v6_x86_64_c8a.large.zst"
-
-
-@callback(
-    Output("compare-dataset-selector", "value", allow_duplicate=True),
-    Input("tour-clear-btn", "n_clicks"),
-    prevent_initial_call=True,
-)
-def clear_tour_compare_dataset(_):
-    return None
 
 
 clientside_callback(

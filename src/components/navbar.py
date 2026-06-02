@@ -7,7 +7,6 @@ from dash import (
     callback,
     clientside_callback,
     html,
-    no_update,
 )
 from dash_iconify import DashIconify
 
@@ -279,17 +278,3 @@ clientside_callback(
     State("dataset-selector", "value"),
     prevent_initial_call=True,
 )
-
-
-_TOUR_ALGORITHMS = {"RSA-PSS-2048", "P-256", "ML-DSA-44", "MAYO-1", "SLH_DSA_PURE_SHA2_128F"}
-
-
-@callback(
-    Output("clicked-algs", "data", allow_duplicate=True),
-    Input("tour-preselect-btn", "n_clicks"),
-    prevent_initial_call=True,
-)
-def preselect_tour_algorithms(n_clicks):
-    if not n_clicks:
-        return no_update
-    return {alg: True for alg in _TOUR_ALGORITHMS}
