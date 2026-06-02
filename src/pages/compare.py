@@ -7,6 +7,14 @@ from components.dataset import ALL_DATA, DATASETS, DEFAULT_DATASET, FEATURES
 
 COLORS = ["#ff6b6b", "#339af0", "#51cf66", "#fcc419", "#cc5de8"]
 
+
+def _fmt(value, decimals=None):
+    if decimals is not None:
+        s = f"{value:,.{decimals}f}"
+    else:
+        s = f"{int(value):,}"
+    return s.replace(",", "\N{NARROW NO-BREAK SPACE}")
+
 _COLUMNS = [
     "Algorithm",
     "NIST Security Level",
@@ -34,8 +42,8 @@ def generate_table(algs, df, table_id="compare-table"):
     for i, row in tmp.iterrows():
         alg_name = row["Algorithm"]
         nist_level = row["NIST Security Level"]
-        sizes = [f"{row.values[i]}" for i in range(2, 5)]
-        times = [f"{row.values[i]:.1f}" for i in range(5, 8)]
+        sizes = [_fmt(row.values[i]) for i in range(2, 5)]
+        times = [_fmt(row.values[i], decimals=1) for i in range(5, 8)]
         data.append([alg_name, nist_level] + sizes + times)
 
     return dmc.Container(
@@ -144,13 +152,13 @@ def generate_merged_table(algs, df_base, df_compare, base_label, compare_label):
         cells = [
             dmc.TableTd(alg_name),
             dmc.TableTd(str(base_row["NIST Security Level"])),
-            dmc.TableTd(str(int(base_row["Pubkey (bytes)"]))),
-            dmc.TableTd(str(int(base_row["Privkey (bytes)"]))),
-            dmc.TableTd(str(int(base_row["Signature (bytes)"]))),
+            dmc.TableTd(_fmt(base_row["Pubkey (bytes)"])),
+            dmc.TableTd(_fmt(base_row["Privkey (bytes)"])),
+            dmc.TableTd(_fmt(base_row["Signature (bytes)"])),
         ]
         for col in _TIMING_COLS:
             base_val = float(base_row[col])
-            cells.append(dmc.TableTd(f"{base_val:.1f}"))
+            cells.append(dmc.TableTd(_fmt(base_val, decimals=1)))
             if missing_in_compare:
                 cells.append(dmc.TableTd("—"))
             else:
@@ -161,7 +169,7 @@ def generate_merged_table(algs, df_base, df_compare, base_label, compare_label):
                 cells.append(
                     dmc.TableTd(
                         [
-                            f"{compare_val:.1f} ",
+                            _fmt(compare_val, decimals=1) + " ",
                             html.Span(
                                 diff_str,
                                 style={"color": diff_color, "fontSize": "0.85em", "whiteSpace": "nowrap"},
