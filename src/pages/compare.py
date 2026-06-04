@@ -15,6 +15,7 @@ def _fmt(value, decimals=None):
         s = f"{int(value):,}"
     return s.replace(",", "\N{NARROW NO-BREAK SPACE}")
 
+
 _COLUMNS = [
     "Algorithm",
     "NIST Security Level",
@@ -24,6 +25,17 @@ _COLUMNS = [
     "Keygen (μs)",
     "Sign (μs)",
     "Verify (μs)",
+]
+
+_HEADERS = [
+    "Algorithm",
+    "NIST Security Level",
+    "Public key size (bytes)",
+    "Private key size (bytes)",
+    "Signature size (bytes)",
+    "Key generation time (μs)",
+    "Signing time (μs)",
+    "Verififcation time (μs)",
 ]
 
 dash.register_page(
@@ -37,36 +49,32 @@ layout = []
 
 
 def generate_table(algs, df, table_id="compare-table"):
-    data = []
     tmp = pd.concat([df[df["Algorithm"] == alg_name] for alg_name in algs if algs[alg_name]])
-    for i, row in tmp.iterrows():
+
+    rows = []
+    for _, row in tmp.iterrows():
         alg_name = row["Algorithm"]
         nist_level = row["NIST Security Level"]
         sizes = [_fmt(row.values[i]) for i in range(2, 5)]
         times = [_fmt(row.values[i], decimals=1) for i in range(5, 8)]
-        data.append([alg_name, nist_level] + sizes + times)
+        values = [alg_name, nist_level] + sizes + times
+        cells = [dmc.TableTd(values[0], ta="left")] + [dmc.TableTd(v, ta="right") for v in values[1:]]
+        rows.append(dmc.TableTr(cells))
+
+    thead = dmc.TableThead(dmc.TableTr([dmc.TableTh(h, ta="center") for h in _HEADERS]))
 
     return dmc.Container(
         id=table_id,
         children=[
-            dmc.Table(
-                striped=True,
-                highlightOnHover=True,
-                withTableBorder=True,
-                withColumnBorders=True,
-                data={
-                    "head": [
-                        "Algorithm",
-                        "NIST Security Level",
-                        "Public key size (bytes)",
-                        "Private key size (bytes)",
-                        "Signature size (bytes)",
-                        "Key generation time (μs)",
-                        "Signing time (μs)",
-                        "Verififcation time (μs)",
-                    ],
-                    "body": data,
-                },
+            dmc.TableScrollContainer(
+                dmc.Table(
+                    striped=True,
+                    highlightOnHover=True,
+                    withTableBorder=True,
+                    withColumnBorders=True,
+                    children=[thead, dmc.TableTbody(rows)],
+                ),
+                minWidth=800,
             )
         ],
         size="90%",
@@ -150,17 +158,17 @@ def generate_merged_table(algs, df_base, df_compare, base_label, compare_label):
         missing_in_compare = compare_rows.empty
 
         cells = [
-            dmc.TableTd(alg_name),
-            dmc.TableTd(str(base_row["NIST Security Level"])),
-            dmc.TableTd(_fmt(base_row["Pubkey (bytes)"])),
-            dmc.TableTd(_fmt(base_row["Privkey (bytes)"])),
-            dmc.TableTd(_fmt(base_row["Signature (bytes)"])),
+            dmc.TableTd(alg_name, ta="left"),
+            dmc.TableTd(str(base_row["NIST Security Level"]), ta="right"),
+            dmc.TableTd(_fmt(base_row["Pubkey (bytes)"]), ta="right"),
+            dmc.TableTd(_fmt(base_row["Privkey (bytes)"]), ta="right"),
+            dmc.TableTd(_fmt(base_row["Signature (bytes)"]), ta="right"),
         ]
         for col in _TIMING_COLS:
             base_val = float(base_row[col])
-            cells.append(dmc.TableTd(_fmt(base_val, decimals=1)))
+            cells.append(dmc.TableTd(_fmt(base_val, decimals=1), ta="right"))
             if missing_in_compare:
-                cells.append(dmc.TableTd("—"))
+                cells.append(dmc.TableTd("—", ta="center"))
             else:
                 compare_val = float(compare_rows.iloc[0][col])
                 diff = ((compare_val - base_val) / base_val * 100) if base_val != 0 else 0
@@ -174,7 +182,8 @@ def generate_merged_table(algs, df_base, df_compare, base_label, compare_label):
                                 diff_str,
                                 style={"color": diff_color, "fontSize": "0.85em", "whiteSpace": "nowrap"},
                             ),
-                        ]
+                        ],
+                        ta="right",
                     )
                 )
         rows.append(dmc.TableTr(cells))
@@ -182,27 +191,10 @@ def generate_merged_table(algs, df_base, df_compare, base_label, compare_label):
     thead = dmc.TableThead(
         [
             dmc.TableTr(
-                [
-                    dmc.TableTh("Algorithm", tableProps={"rowSpan": 2}),
-                    dmc.TableTh("NIST Security Level", tableProps={"rowSpan": 2}),
-                    dmc.TableTh("Public key size (bytes)", tableProps={"rowSpan": 2}),
-                    dmc.TableTh("Private key size (bytes)", tableProps={"rowSpan": 2}),
-                    dmc.TableTh("Signature size (bytes)", tableProps={"rowSpan": 2}),
-                    dmc.TableTh("Key generation time (μs)", ta="center", tableProps={"colSpan": 2}),
-                    dmc.TableTh("Signing time (μs)", ta="center", tableProps={"colSpan": 2}),
-                    dmc.TableTh("Verififcation time (μs)", ta="center", tableProps={"colSpan": 2}),
-                ]
+                [dmc.TableTh(h, ta="center", tableProps={"rowSpan": 2}) for h in _HEADERS[:5]]
+                + [dmc.TableTh(h, ta="center", tableProps={"colSpan": 2}) for h in _HEADERS[5:]]
             ),
-            dmc.TableTr(
-                [
-                    dmc.TableTh("Base"),
-                    dmc.TableTh("Comparison"),
-                    dmc.TableTh("Base"),
-                    dmc.TableTh("Comparison"),
-                    dmc.TableTh("Base"),
-                    dmc.TableTh("Comparison"),
-                ]
-            ),
+            dmc.TableTr([dmc.TableTh(s, ta="center") for _ in _HEADERS[5:] for s in ("Base", "Comparison")]),
         ]
     )
 
