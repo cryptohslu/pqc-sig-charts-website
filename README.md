@@ -7,6 +7,9 @@
 
 Source code of the Plotly/Dash visualization website for PQC signature algorithms.
 
+The rawdata for the visualizations was obtained running the code available in [cryptohslu/pqc-sig-bench-c](https://github.com/cryptohslu/pqc-sig-bench-c).
+The compressed Pandas dataframes from [`data`](data) were generated using the script [`generate_dataset.py`](https://github.com/cryptohslu/pqc-sig-bench-c/blob/main/scripts/generate_dataset.py).
+
 ## Quick start
 
 ```console
