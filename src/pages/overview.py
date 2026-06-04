@@ -243,7 +243,6 @@ clientside_callback(
     function(clicked, radar_ids) {
         if (!clicked) return [
             window.dash_clientside.no_update,
-            window.dash_clientside.no_update,
             radar_ids.map(() => 'radar-card')
         ];
         const n_clicked = Object.values(clicked).filter(Boolean).length;
@@ -254,12 +253,11 @@ clientside_callback(
             if (max_reached) return 'radar-card radar-card--disabled';
             return 'radar-card';
         });
-        return ['Compare (' + n_clicked + ')', {value: n_clicked}, classnames];
+        return ['Compare (' + n_clicked + ')', classnames];
     }
     """,
     [
         Output("compare-button", "children"),
-        Output("n-clicked-algs", "data"),
         Output({"type": "radar-clickable", "index": ALL}, "className"),
     ],
     Input("clicked-algs", "data"),

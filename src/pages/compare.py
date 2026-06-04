@@ -1,7 +1,7 @@
 import dash
 import dash_mantine_components as dmc
 import pandas as pd
-from dash import Input, Output, State, callback, clientside_callback, html, no_update
+from dash import Input, Output, callback, clientside_callback, html, no_update
 
 from components.dataset import ALL_DATA, DATASETS, DEFAULT_DATASET, FEATURES
 
@@ -262,10 +262,9 @@ clientside_callback(
         Input("dataset-selector", "value"),
         Input("compare-dataset-selector", "value"),
     ],
-    State("n-clicked-algs", "data"),
     prevent_initial_call=True,
 )
-def update_comparison(clicked_algs, url, selected_dataset, compare_dataset, n_clicked):
+def update_comparison(clicked_algs, url, selected_dataset, compare_dataset):
     if url != "/sig-charts/compare/":
         return [], no_update
 

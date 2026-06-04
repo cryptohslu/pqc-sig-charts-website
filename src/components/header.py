@@ -25,7 +25,6 @@ def create_header(data, url_base_pathname):
         children=[
             dcc.Location(id="url", refresh=False),
             dcc.Store(id="selected-algs", storage_type="session"),
-            dcc.Store(id="n-clicked-algs", storage_type="session"),
             dcc.Store(id="clicked-algs", storage_type="session"),
             dcc.Store(id="all-dataset-algs", data=_ALL_DATASET_ALGS),
             dmc.Stack(
@@ -160,14 +159,11 @@ clientside_callback(
 
 
 @callback(
-    [
-        Output("clicked-algs", "data", allow_duplicate=True),
-        Output("n-clicked-algs", "data", allow_duplicate=True),
-    ],
+    Output("clicked-algs", "data", allow_duplicate=True),
     Input("tour-clear-btn", "n_clicks"),
     prevent_initial_call=True,
 )
 def clear_tour_selections(n_clicks):
     if not n_clicks:
-        return no_update, no_update
-    return {}, {"value": 0}
+        return no_update
+    return {}
