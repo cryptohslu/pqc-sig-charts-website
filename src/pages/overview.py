@@ -217,6 +217,29 @@ clientside_callback(
 
 clientside_callback(
     """
+    function(dataset, clicked_algs, all_dataset_algs) {
+        if (!clicked_algs || !all_dataset_algs) return window.dash_clientside.no_update;
+        const available = new Set(all_dataset_algs[dataset] || []);
+        let changed = false;
+        const cleaned = {};
+        for (const [alg, v] of Object.entries(clicked_algs)) {
+            if (available.has(alg)) {
+                cleaned[alg] = v;
+            } else {
+                changed = true;
+            }
+        }
+        return changed ? cleaned : window.dash_clientside.no_update;
+    }
+    """,
+    Output("clicked-algs", "data", allow_duplicate=True),
+    Input("dataset-selector", "value"),
+    [State("clicked-algs", "data"), State("all-dataset-algs", "data")],
+    prevent_initial_call=True,
+)
+
+clientside_callback(
+    """
     function(clicked, radar_ids) {
         if (!clicked) return [
             window.dash_clientside.no_update,

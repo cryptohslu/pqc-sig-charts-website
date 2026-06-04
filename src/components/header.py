@@ -5,6 +5,7 @@ from dash_iconify import DashIconify
 from components.dataset import ALL_DATA, DEFAULT_DATASET
 
 _DEFAULT_N_ALGS = len(ALL_DATA[DEFAULT_DATASET])
+_ALL_DATASET_ALGS = {dataset: list(df["Algorithm"].unique()) for dataset, df in ALL_DATA.items()}
 
 theme_toggle = dmc.Switch(
     offLabel=DashIconify(icon="radix-icons:sun", width=15, color=dmc.DEFAULT_THEME["colors"]["yellow"][8]),
@@ -26,6 +27,7 @@ def create_header(data, url_base_pathname):
             dcc.Store(id="selected-algs", storage_type="session"),
             dcc.Store(id="n-clicked-algs", storage_type="session"),
             dcc.Store(id="clicked-algs", storage_type="session"),
+            dcc.Store(id="all-dataset-algs", data=_ALL_DATASET_ALGS),
             dmc.Stack(
                 justify="center",
                 h=70,
