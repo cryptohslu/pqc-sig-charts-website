@@ -42,11 +42,11 @@ If this visualization was useful to you in your research or project, please cite
 ```bibtex
 @software{Mendez_Veiga_PQC_Digital_Signatures,
     author = {Mendez Veiga, Iyan},
-    doi = {10.5281/zenodo.18241109},
-    month = jan,
+    doi = {10.5281/zenodo.20546270},
+    month = jun,
     title = {{PQC Digital Signatures Visualization}},
     url = {https://github.com/cryptohslu/pqc-sig-charts-website},
-    version = {2026.01.14},
+    version = {2026.06.05},
     year = {2026}
 }
 ```
@@ -54,5 +54,5 @@ If this visualization was useful to you in your research or project, please cite
 ### APA
 
 ```
-Mendez Veiga, I. (2026). PQC Digital Signatures Visualization (Version 2026.01.14) [Computer software]. https://doi.org/10.5281/zenodo.18241109
+Mendez Veiga, I. (2026). PQC Digital Signatures Visualization (Version 2026.06.04) [Computer software]. https://doi.org/10.5281/zenodo.20546270
 ```
