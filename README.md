@@ -46,7 +46,7 @@ If this visualization was useful to you in your research or project, please cite
     month = jun,
     title = {{PQC Digital Signatures Visualization}},
     url = {https://github.com/cryptohslu/pqc-sig-charts-website},
-    version = {2026.06.05},
+    version = {2026.06.04},
     year = {2026}
 }
 ```
