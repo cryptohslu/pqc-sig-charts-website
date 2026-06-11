@@ -1,6 +1,6 @@
 # pqc-sig-charts-website
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.18241109.svg)](https://doi.org/10.5281/zenodo.18241109)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.20546270.svg)](https://doi.org/10.5281/zenodo.20546270)
 [![Deploy webapp](https://github.com/cryptohslu/pqc-sig-charts-website/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/cryptohslu/pqc-sig-charts-website/actions/workflows/deploy.yml)
 
 [pqc-sig-charts.webm](https://github.com/user-attachments/assets/d51f36d6-32a4-4914-a678-ef8f34146057)
